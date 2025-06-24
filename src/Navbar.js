@@ -78,7 +78,6 @@ export default function Navbar() {
             <Box sx={{ width: ['100vw'], display: 'flex', justifyContent: "end", padding: "10px 5px" }}>
                 <BottomNavigation
                     showLabels
-                    sx={{ bgcolor: "#f5f4f4aa" }}
                     value={value}
                     onChange={(event, newValue) => {
                         setValue(newValue);
@@ -86,7 +85,7 @@ export default function Navbar() {
                 >
                     <BottomNavigationAction component={Link} to="/home" label="Home" icon={<HomeIcon />} sx={{ marginRight: "20px" }} />
                     {user ?
-                        <BottomNavigationAction component={Link} value={2} to="/businessDashboard" label="Business Dash" icon={<AddBusinessIcon />} sx={{ marginRight: "20px" }} />
+                        <BottomNavigationAction component={Link} value={2} to="/businessDashboard" label="Business" icon={<AddBusinessIcon />} sx={{ marginRight: "20px"}} />
                         :
                         <BottomNavigationAction component={Link} value={1} to="/signup" label="Register" icon={<AssignmentIndIcon />} sx={{ marginRight: "20px" }} />
                     }

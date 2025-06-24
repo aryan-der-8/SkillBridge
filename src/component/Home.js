@@ -1,143 +1,3 @@
-// import {
-//   Container,
-//   Typography,
-//   Box,
-//   Button,
-//   Grid,
-//   Card,
-//   CardContent,
-//   Avatar,
-//   Rating,
-// } from '@mui/material';
-// import { useNavigate } from 'react-router';
-
-// export default function Home() {
-//   const reviews = [
-//     {
-//       name: 'Keval Shah',
-//       feedback: 'SkillBridge helped me gain real-world experience with an interior design firm. It’s a great platform for students!',
-//       rating: 5,
-//     },
-//     {
-//       name: 'Deven Mehta',
-//       feedback: 'I worked with a local startup through SkillBridge and it boosted my resume tremendously!',
-//       rating: 4,
-//     },
-//   ];
-
-//   const businessOwners = [
-//     {
-//       name: 'Mirror Interiors',
-//       category: 'Home Decor and Interior Design',
-//       location: 'Nikol, Ahmedabad',
-//     },
-//     {
-//       name: 'Shree Furniture ',
-//       category: 'Furniture Manufacturer and Retailer',
-//       location: 'Odhav, Ahmedabad',
-//     },
-//   ];
-
-//   const navigate = useNavigate();
-
-//   return (
-//     <Container maxWidth="lg" sx={{ mt: 5 }}>
-//       {/* Hero Section */}
-//       <Box textAlign="center" sx={{ mb: 8 }}>
-//         <Typography variant="h3" fontWeight="bold" color="primary" gutterBottom>
-//           Welcome to SkillBridge
-//         </Typography>
-//         <Typography variant="h6" color="text.secondary" gutterBottom>
-//           Bridging the gap between learning and working experience.
-//         </Typography>
-//         <Grid container spacing={3} justifyContent="center" sx={{ mt: 4 }}>
-//           <Grid item>
-//             <img src="https://images.unsplash.com/photo-1571573750055-39cfc5545c23?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Experience" width="300" style={{ borderRadius: '10px', height:'200px' }} />
-//           </Grid>
-//           <Grid item>
-//             <img src="https://images.unsplash.com/39/lIZrwvbeRuuzqOoWJUEn_Photoaday_CSD%20%281%20of%201%29-5.jpg?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Collaboration" width="300" style={{ borderRadius: '10px',height:'200px' }} />
-//           </Grid>
-//           <Grid item>
-//             <img src="https://images.unsplash.com/photo-1504805572947-34fad45aed93?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y2FyZWVyfGVufDB8fDB8fHww" alt="Career Growth" width="300" style={{ borderRadius: '10px',height:'200px' }} />
-//           </Grid>
-//         </Grid>
-//         <Button variant="contained" color="primary" size="large" sx={{ mt: 4 }} onClick={() => navigate('/signup') } >
-//           Get Started
-//         </Button>
-//       </Box>
-
-//       {/* About Section */}
-//       <Box textAlign="center" sx={{ mb: 8 }}>
-//         <Typography variant="h4" fontWeight="bold" gutterBottom>
-//           Why SkillBridge?
-//         </Typography>
-//         <Typography variant="body1" color="text.secondary" maxWidth="md" mx="auto">
-//           We connect college students and freshers directly with businesses to gain real-time experience in their fields of interest. No middlemen, just direct learning and growth.
-//         </Typography>
-//       </Box>
-
-//       {/* Business Owners */}
-//       <Box sx={{ mb: 8 }}>
-//         <Typography variant="h4" fontWeight="bold" gutterBottom textAlign="center">
-//           Trusted Business Owners
-//         </Typography>
-//         <Grid container spacing={4} justifyContent="center">
-//           {businessOwners.map((owner, index) => (
-//             <Grid item xs={12} sm={6} md={4} key={index}>
-//               <Card sx={{ p: 2, textAlign: 'center', borderRadius: 3 }}>
-//                 <Typography variant="h6" fontWeight="bold">{owner.name}</Typography>
-//                 <Typography variant="body2" color="text.secondary">{owner.category}</Typography>
-//                 <Typography variant="body2">{owner.location}</Typography>
-//               </Card>
-//             </Grid>
-//           ))}
-//         </Grid>
-//       </Box>
-
-//       {/* User Reviews */}
-//       <Box sx={{ mb: 8, marginLeft: 'auto', marginRight: 'auto', maxWidth: '800px' }}>
-//         <Typography variant="h4" fontWeight="bold" gutterBottom textAlign="center">
-//           Student Reviews
-//         </Typography>
-//         <Grid container spacing={4}>
-//           {reviews.map((review, index) => (
-//             <Grid item xs={12} sm={6} md={4} key={index}>
-//               <Card sx={{ p: 3, borderRadius: 3 }}>
-//                 <Box display="flex" alignItems="center" mb={2}>
-//                   <Avatar sx={{ bgcolor: 'primary.main', mr: 2 }}>{review.name[0]}</Avatar>
-//                   <Box>
-//                     <Typography variant="subtitle1" fontWeight="bold">
-//                       {review.name}
-//                     </Typography>
-//                     <Rating value={review.rating} readOnly size="small" />
-//                   </Box>
-//                 </Box>
-//                 <Typography variant="body2" color="text.secondary">
-//                   {review.feedback}
-//                 </Typography>
-//               </Card>
-//             </Grid>
-//           ))}
-//         </Grid>
-//       </Box>
-
-//       {/* Call To Action */}
-//       <Box textAlign="center" sx={{ py: 6, backgroundColor: '#f0f0f0', borderRadius: 4 }}>
-//         <Typography variant="h5" fontWeight="bold">
-//           Join SkillBridge Today
-//         </Typography>
-//         <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 600, margin: 'auto', mt: 1 }}>
-//           Start your journey by applying to business owners in your area of interest and gain valuable professional experience.
-//         </Typography>
-//         <Button variant="contained" color="primary" size="large" sx={{ mt: 3 }}>
-//           Register Now
-//         </Button>
-//       </Box>
-//     </Container>
-//   );
-// }
-
-
 "use client"
 import {
   AppBar,
@@ -167,50 +27,29 @@ import {
   ArrowForward as ArrowForwardIcon,
   Menu as MenuIcon,
 } from "@mui/icons-material"
+import { useNavigate } from "react-router"
 
 
 function Home() {
   const muiTheme = useTheme()
   const isMobile = useMediaQuery(muiTheme.breakpoints.down("md"))
 
+  const navigate = useNavigate();
+  const navigatePage = () => {
+    navigate("/signup");
+  }
+
+  const navigateUserDashboard = () => {
+    navigate("/userDashboard"); 
+  }
+
+  const isBusinessRegistered = localStorage.getItem("BusinessRegister") === "true";  // console.log(businessRegister);
+  const isUserRegistered = localStorage.getItem("UserRegister") === "true"
+
   return (
-    <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
-      {/* Navigation */}
-      <AppBar position="static" sx={{ bgcolor: "white", boxShadow: 1 }}>
-        <Toolbar>
-          <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1 }}>
-            <WorkIcon sx={{ color: "primary.main", mr: 1 }} />
-            <Typography variant="h6" sx={{ color: "text.primary", fontWeight: "bold" }}>
-              CareerConnect
-            </Typography>
-          </Box>
-
-          {!isMobile ? (
-            <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
-              <Typography sx={{ color: "text.secondary", cursor: "pointer", "&:hover": { color: "text.primary" } }}>
-                Features
-              </Typography>
-              <Typography sx={{ color: "text.secondary", cursor: "pointer", "&:hover": { color: "text.primary" } }}>
-                How It Works
-              </Typography>
-              <Typography sx={{ color: "text.secondary", cursor: "pointer", "&:hover": { color: "text.primary" } }}>
-                Success Stories
-              </Typography>
-              <Button variant="outlined" sx={{ color: "text.primary", borderColor: "grey.300" }}>
-                Sign In
-              </Button>
-              <Button variant="contained">Get Started</Button>
-            </Box>
-          ) : (
-            <IconButton>
-              <MenuIcon />
-            </IconButton>
-          )}
-        </Toolbar>
-      </AppBar>
-
+    <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }} textAlign={"center"}>
       {/* Hero Section */}
-      <Container maxWidth="lg" sx={{ py: { xs: 6, md: 10, lg: 14 } }}>
+      <Container maxWidth="lg" sx={{ xs: 6, md: 10, lg: 14, py: 2, borderTop: "1px solid", borderColor: "divider" }}>
         <Grid container spacing={6} alignItems="center">
           <Grid item xs={12} lg={6}>
             <Box sx={{ mb: 4 }}>
@@ -245,18 +84,33 @@ function Home() {
                 connect ambition with opportunity to create meaningful career experiences.
               </Typography>
             </Box>
-
             <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, gap: 2, mb: 6 }}>
-              <Button variant="contained" size="large" startIcon={<SchoolIcon />} sx={{ px: 4, py: 1.5 }}>
-                Find Opportunities
-              </Button>
-              <Button variant="outlined" size="large" startIcon={<BusinessIcon />} sx={{ px: 4, py: 1.5 }}>
-                Post Jobs
-              </Button>
+
+
+
+              {isBusinessRegistered ? (
+                <Button variant="outlined" size="large" startIcon={<BusinessIcon />} onClick={navigatePage} sx={{ px: 4, py: 1.5 }}>
+                  Post Jobs
+                </Button>
+              ) : isUserRegistered ? (
+                <Button variant="contained" size="large" startIcon={<SchoolIcon />} onClick={navigateUserDashboard} sx={{ px: 4, py: 1.5 }}>
+                  Find Opportunities
+                </Button>
+              ) : (
+                <>
+                  <Button variant="outlined" size="large" startIcon={<BusinessIcon />} onClick={navigatePage} sx={{ px: 4, py: 1.5 }}>
+                    Register as Business
+                  </Button>
+                  <Button variant="contained" size="large" startIcon={<SchoolIcon />} onClick={navigateUserDashboard} sx={{ px: 4, py: 1.5 }} sx={{ ml: 2 }}>
+                    Find Opportunities
+                  </Button>
+                </>
+              )}
+
             </Box>
 
-            <Grid container spacing={3} sx={{ margin: "0 auto", width: "100%" }}>
-              <Grid size={4} xs={4} sx={{ width: "300px"}}>
+            <Grid container sx={{ margin: "0 auto", width: "100%" }}>
+              <Grid size={4} xs={4} sx={{ width: "300px", marginLeft: "auto", marginRight: "auto" }}>
                 <Box sx={{ textAlign: "center" }}>
                   <Typography variant="h4" sx={{ fontWeight: "bold", color: "text.primary" }}>
                     10K+
@@ -266,7 +120,7 @@ function Home() {
                   </Typography>
                 </Box>
               </Grid>
-              <Grid size={4} xs={4} sx={{ width: "300px"}}>
+              <Grid size={4} xs={4} sx={{ width: "300px", marginLeft: "auto", marginRight: "auto" }}>
                 <Box sx={{ textAlign: "center" }}>
                   <Typography variant="h4" sx={{ fontWeight: "bold", color: "text.primary" }}>
                     500+
@@ -276,7 +130,7 @@ function Home() {
                   </Typography>
                 </Box>
               </Grid>
-              <Grid size={4} xs={4} sx={{ width: "300px"}}>
+              <Grid size={4} xs={4} sx={{ width: "300px", marginLeft: "auto", marginRight: "auto" }}>
                 <Box sx={{ textAlign: "center" }}>
                   <Typography variant="h4" sx={{ fontWeight: "bold", color: "text.primary" }}>
                     95%
@@ -290,16 +144,20 @@ function Home() {
           </Grid>
 
           <Grid item xs={12} lg={6}>
-            <Box sx={{ position: "relative" }}>
+            <Box sx={{ position: "relative", marginLeft: "160px" }}>
               <Box
                 component="img"
-                src="/placeholder.svg?height=600&width=600"
+                src="./medicine.jpg"
                 alt="Students and professionals collaborating"
                 sx={{
                   width: "100%",
                   height: "auto",
                   borderRadius: 2,
                   boxShadow: 3,
+                  position: "relative",
+                  zIndex: 0,
+                  top: 22,
+                  left: '80%',
                 }}
               />
               <Paper
@@ -690,6 +548,7 @@ function Home() {
                   py: 1.5,
                   "&:hover": { bgcolor: "grey.100" },
                 }}
+                onClick={navigatePage}
               >
                 Join as Student
               </Button>
@@ -705,6 +564,7 @@ function Home() {
                   py: 1.5,
                   "&:hover": { bgcolor: "rgba(255,255,255,0.1)", borderColor: "white" },
                 }}
+                onClick={navigatePage}
               >
                 Post Jobs
               </Button>
@@ -721,7 +581,7 @@ function Home() {
               <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
                 <WorkIcon sx={{ color: "primary.light", mr: 1 }} />
                 <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-                  CareerConnect
+                  SkillBridge
                 </Typography>
               </Box>
               <Typography variant="body2" sx={{ color: "grey.400" }}>
@@ -824,7 +684,7 @@ function Home() {
           </Grid>
           <Box sx={{ borderTop: "1px solid", borderColor: "grey.800", mt: 4, pt: 4, textAlign: "center" }}>
             <Typography variant="body2" sx={{ color: "grey.400" }}>
-              © 2024 CareerConnect. All rights reserved.
+              © 2024 SkillBridge. All rights reserved.
             </Typography>
           </Box>
         </Container>
