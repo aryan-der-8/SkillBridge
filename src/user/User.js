@@ -26,7 +26,10 @@ import { useNavigate } from 'react-router';
 import { UserContext } from '../context/UserContext';
 
 export default function User() {
-  const [email, setEmail] = useState('');
+
+  const signupData = JSON.parse(localStorage.getItem("signUpData"));
+  
+  const [email, setEmail] = useState(signupData.email);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [city, setCity] = useState('');

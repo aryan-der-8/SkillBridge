@@ -109,7 +109,7 @@ export default function Signup() {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
-                        <AccountCircle sx={{ color: 'action.active', position: "absolute", right: "30.6%", paddingTop: "14px" }} />
+                        <AccountCircle sx={{ color: 'action.active', position: "absolute", right: "30.6%", paddingTop: "14px", height:"100px" }} />
                     </Box>
 
 

@@ -15,15 +15,15 @@ import {
 export default function Sidebar() {
     
     const ownerEmail = JSON.parse(localStorage.getItem("signUpData"));
-    console.log(ownerEmail.email);    
 
     const location = useLocation();
     // console.log(location);
 
     const menuItems = [
         { text: 'Dashboard', path: '/businessDashboard/dashboard' },
-        { text: 'Business List', path: '/businessDashboard/business-list' },
+        { text: 'Job Applied', path: '/businessDashboard/jobapplied' },
         { text: 'Register Business', path: '/businessDashboard/register' },
+        { text: 'Business List', path: '/businessDashboard/business-list' },
     ];
 
     const drawerWidth = 240;

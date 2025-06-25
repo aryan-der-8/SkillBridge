@@ -65,25 +65,32 @@ const UserDashboard = () => {
     }, [navigate])
 
     const handleApply = (business) => {
-        // Add to applied businesses
-        const newAppliedBusinesses = [...appliedBusinesses, business.email]
-        setAppliedBusinesses(newAppliedBusinesses)
-        localStorage.setItem("appliedBusinesses", JSON.stringify(newAppliedBusinesses))
+        const appliedEntry = {
+            businessId: `${business.businessName}_${business.ownerName}`,
+            userEmail: signUpData.email,
+        };
 
-        alert(`Application submitted to ${business.businessName}! You'll hear back within 2-3 business days.`)
-    }
+        const stored = JSON.parse(localStorage.getItem("appliedBusinesses") || "[]");
 
-    const handleLogout = () => {
-        localStorage.removeItem("signUpData")
-        navigate("/login")
-    }
+        // Avoid duplicate applications
+        const alreadyApplied = stored.some(entry =>
+            entry.businessId === appliedEntry.businessId && entry.userEmail === appliedEntry.userEmail
+        );
+        if (alreadyApplied) {
+            alert("You have already applied to this business.");
+            return;
+        }
+
+        const newAppliedBusinesses = [...stored, appliedEntry];
+        localStorage.setItem("appliedBusinesses", JSON.stringify(newAppliedBusinesses));
+        setAppliedBusinesses(newAppliedBusinesses);
+
+        alert(`Application submitted to ${business.businessName}!`);
+    };
+
 
     const handleMenuOpen = (event) => {
         setAnchorEl(event.currentTarget)
-    }
-
-    const handleMenuClose = () => {
-        setAnchorEl(null)
     }
 
     const filteredBusinesses = businesses.filter(
@@ -117,7 +124,7 @@ const UserDashboard = () => {
             {/* Header */}
             <Button
                 onClick={handleMenuOpen}
-                sx={{ display: "flex", alignItems: "center", gap: 1, textTransform: "none", marginLeft:"30px", paddingTop: "20px" }}
+                sx={{ display: "flex", alignItems: "center", gap: 1, textTransform: "none", marginLeft: "30px", paddingTop: "20px" }}
             >
                 <Avatar sx={{ width: 32, height: 32, bgcolor: "#1976d2" }}>
                     {signUpData.email?.charAt(0).toUpperCase()}
@@ -209,12 +216,14 @@ const UserDashboard = () => {
                 {filteredBusinesses.length > 0 ? (
                     <Grid container spacing={2}>
                         {filteredBusinesses.map((business, index) => {
-                            const isApplied = appliedBusinesses.includes(business.email)
+                            const appliedId = `${business.businessName}_${business.ownerName}`;
+                            const isApplied = appliedBusinesses.includes(appliedId);
                             const rating = getRandomRating()
 
                             return (
-                                <Grid container size={{xs:12, sm:6, lg:4}}key={index} >
+                                <Grid container size={{ xs: 12, sm: 6, lg: 4 }} key={index}  >
                                     <Card
+
                                         sx={{
                                             height: "100%",
                                             width: "300px",

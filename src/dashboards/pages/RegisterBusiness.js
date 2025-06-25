@@ -4,11 +4,13 @@ import TextField from "@mui/material/TextField";
 import { useState } from "react";
 
 export default function RegisterBusiness() {
-
+    
+    const signupData = JSON.parse(localStorage.getItem("signUpData"));
+    
     const [formData, setFormData] = useState({
         businessName: '',
         ownerName: '',
-        email: '',
+        email: signupData.email || '',
         phone: '',
         businessType: '',
         gstNumber: '',
@@ -24,6 +26,7 @@ export default function RegisterBusiness() {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
     };
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -103,8 +106,8 @@ export default function RegisterBusiness() {
                         <TextField
                             required
                             sx={{ width: "100%", }}
-                            value={formData.email}
-                            onChange={handleChange}
+                            value={signupData.email}
+                            // onChange={handleChange}
                             type="email"
                             name="email"
                             id="standard-basic"

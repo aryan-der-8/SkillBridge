@@ -42,9 +42,6 @@ export default function Navbar() {
 
     // register true or false
     const { setUser, user, userIcon, setUserIcon } = React.useContext(UserContext);
-    console.log(userIcon);
-
-
 
     const navigate = useNavigate();
 

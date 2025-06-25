@@ -1,7 +1,5 @@
 "use client"
 import {
-  AppBar,
-  Toolbar,
   Typography,
   Button,
   Container,
@@ -28,6 +26,7 @@ import {
   Menu as MenuIcon,
 } from "@mui/icons-material"
 import { useNavigate } from "react-router"
+import success from "./success.jpg"
 
 
 function Home() {
@@ -35,15 +34,20 @@ function Home() {
   const isMobile = useMediaQuery(muiTheme.breakpoints.down("md"))
 
   const navigate = useNavigate();
+
   const navigatePage = () => {
     navigate("/signup");
   }
 
-  const navigateUserDashboard = () => {
-    navigate("/userDashboard"); 
+  const navigateOwnerDashboard = () => {
+    navigate("/businessDashboard/register");
   }
 
-  const isBusinessRegistered = localStorage.getItem("BusinessRegister") === "true";  // console.log(businessRegister);
+  const navigateUserDashboard = () => {
+    navigate("/userDashboard");
+  }
+
+  const isBusinessRegistered = localStorage.getItem("BusinessRegister") === "true";
   const isUserRegistered = localStorage.getItem("UserRegister") === "true"
 
   return (
@@ -51,7 +55,7 @@ function Home() {
       {/* Hero Section */}
       <Container maxWidth="lg" sx={{ xs: 6, md: 10, lg: 14, py: 2, borderTop: "1px solid", borderColor: "divider" }}>
         <Grid container spacing={6} alignItems="center">
-          <Grid item xs={12} lg={6}>
+          <Grid size={{ xs: 12, lg: 6 }}>
             <Box sx={{ mb: 4 }}>
               <Chip
                 label="🚀 Connecting Talent with Opportunity"
@@ -84,12 +88,9 @@ function Home() {
                 connect ambition with opportunity to create meaningful career experiences.
               </Typography>
             </Box>
-            <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, gap: 2, mb: 6 }}>
-
-
-
+            <Box sx={{ display: "flex", justifyContent: "center", flexDirection: { xs: "column", sm: "row" }, gap: 2, mb: 6, marginLeft: "auto", marginRight: "auto" }}>
               {isBusinessRegistered ? (
-                <Button variant="outlined" size="large" startIcon={<BusinessIcon />} onClick={navigatePage} sx={{ px: 4, py: 1.5 }}>
+                <Button variant="outlined" size="large" startIcon={<BusinessIcon />} onClick={navigateOwnerDashboard} sx={{ px: 4, py: 1.5 }}>
                   Post Jobs
                 </Button>
               ) : isUserRegistered ? (
@@ -101,7 +102,7 @@ function Home() {
                   <Button variant="outlined" size="large" startIcon={<BusinessIcon />} onClick={navigatePage} sx={{ px: 4, py: 1.5 }}>
                     Register as Business
                   </Button>
-                  <Button variant="contained" size="large" startIcon={<SchoolIcon />} onClick={navigateUserDashboard} sx={{ px: 4, py: 1.5 }} sx={{ ml: 2 }}>
+                  <Button variant="contained" size="large" startIcon={<SchoolIcon />} onClick={navigateUserDashboard} sx={{ px: 4, py: 1.5, ml: 2 }}>
                     Find Opportunities
                   </Button>
                 </>
@@ -109,9 +110,9 @@ function Home() {
 
             </Box>
 
-            <Grid container sx={{ margin: "0 auto", width: "100%" }}>
-              <Grid size={4} xs={4} sx={{ width: "300px", marginLeft: "auto", marginRight: "auto" }}>
-                <Box sx={{ textAlign: "center" }}>
+            <Grid container >
+              <Grid size={{ xs: 4, md: 4, lg: 4 }} >
+                <Box >
                   <Typography variant="h4" sx={{ fontWeight: "bold", color: "text.primary" }}>
                     10K+
                   </Typography>
@@ -120,7 +121,7 @@ function Home() {
                   </Typography>
                 </Box>
               </Grid>
-              <Grid size={4} xs={4} sx={{ width: "300px", marginLeft: "auto", marginRight: "auto" }}>
+              <Grid size={{ xs: 4, md: 4, lg: 4 }}>
                 <Box sx={{ textAlign: "center" }}>
                   <Typography variant="h4" sx={{ fontWeight: "bold", color: "text.primary" }}>
                     500+
@@ -130,7 +131,8 @@ function Home() {
                   </Typography>
                 </Box>
               </Grid>
-              <Grid size={4} xs={4} sx={{ width: "300px", marginLeft: "auto", marginRight: "auto" }}>
+              {/* sx={{ width: "300px", marginLeft: "auto", marginRight: "auto" }} */}
+              <Grid size={{ xs: 4, md: 4, lg: 4 }} >
                 <Box sx={{ textAlign: "center" }}>
                   <Typography variant="h4" sx={{ fontWeight: "bold", color: "text.primary" }}>
                     95%
@@ -143,39 +145,63 @@ function Home() {
             </Grid>
           </Grid>
 
-          <Grid item xs={12} lg={6}>
-            <Box sx={{ position: "relative", marginLeft: "160px" }}>
+          <Grid size={{xs:12, lg:6}}>
+            <Box sx={{ position: "relative", ml: { xs: 0, lg: 8 }, mt: 4 }}>
+              {/* Image Container with Overlay */}
               <Box
-                component="img"
-                src="./medicine.jpg"
-                alt="Students and professionals collaborating"
                 sx={{
-                  width: "100%",
-                  height: "auto",
-                  borderRadius: 2,
-                  boxShadow: 3,
                   position: "relative",
-                  zIndex: 0,
-                  top: 22,
-                  left: '80%',
+                  width: "100%",
+                  height: 500,
+                  borderRadius: 3,
+                  overflow: "hidden",
+                  boxShadow: 4,
                 }}
-              />
+              >
+                {/* Image */}
+                <Box
+                  component="img"
+                  src={success}
+                  alt="Students and professionals collaborating"
+                  sx={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    display: "block",
+                  }}
+                />
+                {/* Dark overlay */}
+                <Box
+                  sx={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    bgcolor: "rgba(0, 0, 0, 0.4)",
+                  }}
+                />
+              </Box>
+
+              {/* Floating Paper with Text and Avatars */}
               <Paper
                 sx={{
                   position: "absolute",
-                  bottom: -24,
-                  left: -24,
+                  bottom: 16,
+                  left: 16,
                   p: 2,
                   display: "flex",
                   alignItems: "center",
                   gap: 2,
-                  boxShadow: 3,
+                  borderRadius: 2,
+                  boxShadow: 5,
+                  bgcolor: "white",
                 }}
               >
                 <Box sx={{ display: "flex", ml: -1 }}>
-                  <Avatar sx={{ bgcolor: "primary.main", width: 32, height: 32, ml: -1 }} />
-                  <Avatar sx={{ bgcolor: "success.main", width: 32, height: 32, ml: -1 }} />
-                  <Avatar sx={{ bgcolor: "secondary.main", width: 32, height: 32, ml: -1 }} />
+                  <Avatar sx={{ bgcolor: "primary.main", width: 36, height: 36, ml: -1 }} />
+                  <Avatar sx={{ bgcolor: "success.main", width: 36, height: 36, ml: -1 }} />
+                  <Avatar sx={{ bgcolor: "secondary.main", width: 36, height: 36, ml: -1 }} />
                 </Box>
                 <Box>
                   <Typography variant="body2" sx={{ fontWeight: "bold" }}>
@@ -188,6 +214,7 @@ function Home() {
               </Paper>
             </Box>
           </Grid>
+
         </Grid>
       </Container>
 
@@ -196,7 +223,7 @@ function Home() {
         <Container maxWidth="lg">
           <Box sx={{ textAlign: "center", mb: 8 }}>
             <Typography variant="h3" sx={{ fontWeight: "bold", mb: 2 }}>
-              Why Choose CareerConnect?
+              Why Choose SkillBridge?
             </Typography>
             <Typography variant="h6" sx={{ color: "text.secondary", maxWidth: "600px", mx: "auto" }}>
               We understand both sides of the equation - students need experience, businesses need fresh talent. Our
@@ -205,7 +232,7 @@ function Home() {
           </Box>
 
           <Grid container spacing={4}>
-            <Grid item xs={12} md={6} lg={4}>
+            <Grid size={{ xs: 12, md: 6, lg: 6, xl: 6 }}>
               <Card sx={{ height: "100%", boxShadow: 2, "&:hover": { boxShadow: 4 } }}>
                 <CardContent sx={{ p: 3 }}>
                   <Box
@@ -246,7 +273,7 @@ function Home() {
               </Card>
             </Grid>
 
-            <Grid item xs={12} md={6} lg={4}>
+            <Grid size={{ xs: 12, md: 6, lg: 6, xl: 6 }}>
               <Card sx={{ height: "100%", boxShadow: 2, "&:hover": { boxShadow: 4 } }}>
                 <CardContent sx={{ p: 3 }}>
                   <Box
@@ -287,7 +314,7 @@ function Home() {
               </Card>
             </Grid>
 
-            <Grid item xs={12} md={6} lg={4}>
+            <Grid size={{ xs: 12, md: 6, lg: 6, xl: 6 }}>
               <Card sx={{ height: "100%", boxShadow: 2, "&:hover": { boxShadow: 4 } }}>
                 <CardContent sx={{ p: 3 }}>
                   <Box
@@ -343,7 +370,7 @@ function Home() {
         </Box>
 
         <Grid container spacing={8}>
-          <Grid item xs={12} md={6}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <Box sx={{ display: "flex", alignItems: "center", mb: 4 }}>
               <SchoolIcon sx={{ color: "primary.main", mr: 2 }} />
               <Typography variant="h5" sx={{ fontWeight: "bold" }}>
@@ -387,7 +414,7 @@ function Home() {
             </Box>
           </Grid>
 
-          <Grid item xs={12} md={6}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <Box sx={{ display: "flex", alignItems: "center", mb: 4 }}>
               <BusinessIcon sx={{ color: "success.main", mr: 2 }} />
               <Typography variant="h5" sx={{ fontWeight: "bold" }}>
@@ -446,12 +473,12 @@ function Home() {
           </Box>
 
           <Grid container spacing={4}>
-            <Grid item xs={12} md={6} lg={4}>
+            <Grid size={{ xs: 12, md: 6, lg: 4 }}>
               <Card sx={{ height: "100%", boxShadow: 2 }}>
                 <CardContent sx={{ p: 3 }}>
                   <Rating value={5} readOnly sx={{ mb: 2 }} />
                   <Typography variant="body2" sx={{ color: "text.secondary", mb: 3 }}>
-                    "CareerConnect helped me land my dream internship at a tech startup. The platform made it so easy to
+                    "SkillBridge helped me land my dream internship at a tech startup. The platform made it so easy to
                     showcase my skills and connect with the right employers."
                   </Typography>
                   <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -469,12 +496,12 @@ function Home() {
               </Card>
             </Grid>
 
-            <Grid item xs={12} md={6} lg={4}>
+            <Grid size={{ xs: 12, md: 6, lg: 4 }}>
               <Card sx={{ height: "100%", boxShadow: 2 }}>
                 <CardContent sx={{ p: 3 }}>
                   <Rating value={5} readOnly sx={{ mb: 2 }} />
                   <Typography variant="body2" sx={{ color: "text.secondary", mb: 3 }}>
-                    "As a small business owner, finding quality interns was always challenging. CareerConnect delivered
+                    "As a small business owner, finding quality interns was always challenging. SkillBridge delivered
                     motivated students who became valuable team members."
                   </Typography>
                   <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -492,7 +519,7 @@ function Home() {
               </Card>
             </Grid>
 
-            <Grid item xs={12} md={6} lg={4}>
+            <Grid size={{ xs: 12, md: 6, lg: 4 }}>
               <Card sx={{ height: "100%", boxShadow: 2 }}>
                 <CardContent sx={{ p: 3 }}>
                   <Rating value={5} readOnly sx={{ mb: 2 }} />
@@ -531,43 +558,93 @@ function Home() {
             <Typography variant="h3" sx={{ fontWeight: "bold", mb: 2 }}>
               Ready to Start Your Journey?
             </Typography>
-            <Typography variant="h6" sx={{ mb: 4, maxWidth: "600px", mx: "auto", opacity: 0.9 }}>
-              Join thousands of students and employers who have found success through CareerConnect. Your next
-              opportunity is just a click away.
-            </Typography>
+            {
+              isUserRegistered ?
+                <Typography variant="h6" sx={{ mb: 4, maxWidth: "600px", mx: "auto", opacity: 0.9 }}>
+                  Join thousands of students and employers who have found success through SkillBridge. Your next
+                  opportunity is just a click away.
+                </Typography> : null
+            }
+            {
+              isBusinessRegistered ?
+                <Typography variant="h6" sx={{ mb: 4, maxWidth: "600px", mx: "auto", opacity: 0.9 }}>
+                  Looking to mentor, hire, or train fresh talent? Join SkillBridge as a Business Owner now!
+                </Typography> : null
+            }
+
+
+
             <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, gap: 2, justifyContent: "center" }}>
-              <Button
-                variant="contained"
-                size="large"
-                startIcon={<SchoolIcon />}
-                endIcon={<ArrowForwardIcon />}
-                sx={{
-                  bgcolor: "white",
-                  color: "primary.main",
-                  px: 4,
-                  py: 1.5,
-                  "&:hover": { bgcolor: "grey.100" },
-                }}
-                onClick={navigatePage}
-              >
-                Join as Student
-              </Button>
-              <Button
-                variant="outlined"
-                size="large"
-                startIcon={<BusinessIcon />}
-                endIcon={<ArrowForwardIcon />}
-                sx={{
-                  borderColor: "white",
-                  color: "white",
-                  px: 4,
-                  py: 1.5,
-                  "&:hover": { bgcolor: "rgba(255,255,255,0.1)", borderColor: "white" },
-                }}
-                onClick={navigatePage}
-              >
-                Post Jobs
-              </Button>
+              {
+                isBusinessRegistered ? (
+                  <Button
+                    variant="outlined"
+                    size="large"
+                    startIcon={<BusinessIcon />}
+                    endIcon={<ArrowForwardIcon />}
+                    sx={{
+                      borderColor: "white",
+                      color: "white",
+                      px: 4,
+                      py: 1.5,
+                      "&:hover": { bgcolor: "rgba(255,255,255,0.1)", borderColor: "white" },
+                    }}
+                    onClick={navigateOwnerDashboard}
+                  >
+                    Post Jobs
+                  </Button>) : isUserRegistered ? (
+                    <Button
+                      variant="contained"
+                      size="large"
+                      startIcon={<SchoolIcon />}
+                      endIcon={<ArrowForwardIcon />}
+                      sx={{
+                        bgcolor: "white",
+                        color: "primary.main",
+                        px: 4,
+                        py: 1.5,
+                        "&:hover": { bgcolor: "grey.100" },
+                      }}
+                      onClick={navigatePage}
+                    >
+                      Join as Student
+                    </Button>) : (
+                  <>
+                    <Button
+                      variant="contained"
+                      size="large"
+                      startIcon={<SchoolIcon />}
+                      endIcon={<ArrowForwardIcon />}
+                      sx={{
+                        bgcolor: "white",
+                        color: "primary.main",
+                        px: 4,
+                        py: 1.5,
+                        "&:hover": { bgcolor: "grey.100" },
+                      }}
+                      onClick={navigatePage}
+                    >
+                      Join as Student
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      size="large"
+                      startIcon={<BusinessIcon />}
+                      endIcon={<ArrowForwardIcon />}
+                      sx={{
+                        borderColor: "white",
+                        color: "white",
+                        px: 4,
+                        py: 1.5,
+                        "&:hover": { bgcolor: "rgba(255,255,255,0.1)", borderColor: "white" },
+                      }}
+                      onClick={navigatePage}
+                    >
+                      Post Jobs
+                    </Button>
+                  </>
+                )
+              }
             </Box>
           </Box>
         </Container>
@@ -577,7 +654,7 @@ function Home() {
       <Box sx={{ bgcolor: "grey.900", color: "white", py: 6 }}>
         <Container maxWidth="lg">
           <Grid container spacing={4}>
-            <Grid item xs={12} md={3}>
+            <Grid size={{ xs: 12, md: 3 }}>
               <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
                 <WorkIcon sx={{ color: "primary.light", mr: 1 }} />
                 <Typography variant="h6" sx={{ fontWeight: "bold" }}>
@@ -588,7 +665,7 @@ function Home() {
                 Connecting ambitious students with forward-thinking employers to create meaningful career opportunities.
               </Typography>
             </Grid>
-            <Grid item xs={12} md={3}>
+            <Grid size={{ xs: 12, md: 3 }}>
               <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
                 For Students
               </Typography>
@@ -619,7 +696,7 @@ function Home() {
                 </Typography>
               </Box>
             </Grid>
-            <Grid item xs={12} md={3}>
+            <Grid size={{ xs: 12, md: 3 }}>
               <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
                 For Employers
               </Typography>
@@ -650,7 +727,7 @@ function Home() {
                 </Typography>
               </Box>
             </Grid>
-            <Grid item xs={12} md={3}>
+            <Grid size={{ xs: 12, md: 3 }}  >
               <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
                 Support
               </Typography>
