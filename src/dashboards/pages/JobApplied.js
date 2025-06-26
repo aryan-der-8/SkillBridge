@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import {
@@ -42,170 +40,168 @@ import {
 
 const JobApplied = () => {
     const navigate = useNavigate()
-      const [applications, setApplications] = useState([])
-      const [businessData, setBusinessData] = useState(null)
-      const [searchTerm, setSearchTerm] = useState("")
-      const [statusFilter, setStatusFilter] = useState("all")
-      const [selectedApplication, setSelectedApplication] = useState(null)
-      const [dialogOpen, setDialogOpen] = useState(false)
-      const [anchorEl, setAnchorEl] = useState(null)
+    const [applications, setApplications] = useState([])
+    const [businessData, setBusinessData] = useState(null)
+    const [searchTerm, setSearchTerm] = useState("")
+    const [statusFilter, setStatusFilter] = useState("all")
+    const [selectedApplication, setSelectedApplication] = useState(null)
+    const [dialogOpen, setDialogOpen] = useState(false)
+    const [anchorEl, setAnchorEl] = useState(null)
 
-      useEffect(() => {
+    useEffect(() => {
         // Check business owner authentication
         const userData = JSON.parse(localStorage.getItem("signUpData") || "{}")
-        const userLoginData = JSON.parse(localStorage.getItem("userLoginData") || "{}")
 
         if (!userData || userData.userType !== "business") {
-          navigate("/signup")
-          return
+            navigate("/signup")
+            return
         }
 
-        // Get business data
-        const businessInfo = JSON.parse(localStorage.getItem("businessData") || "[]")
-        const currentBusiness = businessInfo.find((b) => b.email === userData.email)
-        console.log("Current Business:", currentBusiness)
-        setBusinessData(currentBusiness)
+        setBusinessData(userData)
+        loadApplications(userData.email)
+    }, [navigate])
 
-        // Load applications for this business
-        loadApplications(userData.email, currentBusiness)
-      }, [navigate])
-
-    // const [businessDataa, setBusinessDataa] = useState('')
-    // const [appliedForUser, setAppliedForUser] = useState('')
-
-    //     const userData = JSON.parse(localStorage.getItem("signUpData") || "{}");
-    //     const businessData = JSON.parse(localStorage.getItem("businessData") || "[]");
-    //     const appliedBusinesses = JSON.parse(localStorage.getItem("appliedBusinesses") || "[]");
-
-    //     // Get all businesses owned by this user
-    //     const ownedBusinesses = businessData.filter(b => b.email === userData.email);
-    //     console.log(ownedBuinesses);
+    const loadApplications = (businessOwnerEmail) => {
+        // Get all businesses owned by this user email
+        const allBusinessData = JSON.parse(localStorage.getItem("businessData") || "[]")
+        const myBusinesses = allBusinessData.filter(business => business.email === businessOwnerEmail)
         
-    //     const ownedBusinessIds = ownedBusinesses.map(b => `${b.businessName}_${b.ownerName}`);
+        console.log("All my businesses:", myBusinesses)
 
-    //     // Find users who applied to any of these businesses
-    //     const applicationsForMyBusiness = appliedBusinesses.filter(app =>
-    //         ownedBusinessIds.includes(app.businessId)
-    //     );
-
-    //     setBusinessDataa(ownedBusinessIds);
-    //     setAppliedForUser(applicationsForMyBusiness);
-
-    //     console.log("Businesses I own:", ownedBusinessIds);
-    //     console.log("Users who applied to my businesses:", applicationsForMyBusiness.map(a => a.userEmail));
-
-
-      const loadApplications = (businessEmail, currentBusiness) => {
-        if (!currentBusiness) return
+        if (myBusinesses.length === 0) {
+            setApplications([])
+            return
+        }
 
         // Get all applied businesses from localStorage
         const appliedBusinesses = JSON.parse(localStorage.getItem("appliedBusinesses") || "[]")
+        console.log("All applied businesses:", appliedBusinesses)
 
-        // Generate applications for this business
+        // Get all business IDs that belong to the current business owner
+        const myBusinessIds = myBusinesses.map(business => `${business.businessName}_${business.ownerName}`)
+        console.log("My business IDs:", myBusinessIds)
+
+        // Filter applications that are for any of my businesses
+        const applicationsForMyBusinesses = appliedBusinesses.filter(app =>
+            myBusinessIds.includes(app.businessId)
+        )
+        console.log("Applications for my businesses:", applicationsForMyBusinesses)
+
+        // Get existing application statuses from localStorage
+        const applicationStatuses = JSON.parse(localStorage.getItem("applicationStatuses") || "{}")
+
+        // Generate full application data
         const businessApplications = []
-        const applicationId = `${currentBusiness.businessName}_${currentBusiness.ownerName}`
-        console.log("Application ID:", applicationId)
-        // Simulate applications from different users who applied to this business
-        const sampleApplicants = [
-          { email: "john.doe@email.com", name: "John Doe" },
-          { email: "sarah.smith@email.com", name: "Sarah Smith" },
-          { email: "mike.johnson@email.com", name: "Mike Johnson" },
-          { email: "emily.davis@email.com", name: "Emily Davis" },
-          { email: "alex.wilson@email.com", name: "Alex Wilson" },
-        ]
+        
+        applicationsForMyBusinesses.forEach((app, index) => {
+            // Find the business details for this application
+            const businessDetails = myBusinesses.find(business => 
+                `${business.businessName}_${business.ownerName}` === app.businessId
+            )
 
-        // Check if there are any applications for this business
-        if (appliedBusinesses.includes(applicationId)) {
-          sampleApplicants.forEach((applicant, index) => {
-            if (Math.random() > 0.3) {
-              // 70% chance of having an application
-              const statuses = ["pending", "accepted", "rejected"]
-              const randomStatus = statuses[Math.floor(Math.random() * statuses.length)]
+            if (businessDetails) {
+                // Generate unique application ID
+                const applicationId = `${app.businessId}_${app.userEmail}`
+                
+                // Generate applicant name from email (simple approach)
+                const applicantName = app.userEmail.split('@')[0].replace('.', ' ').split(' ')
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
 
-              businessApplications.push({
-                id: `app_${index}_${Date.now()}`,
-                applicantEmail: applicant.email,
-                applicantName: applicant.name,
-                businessName: currentBusiness.businessName,
-                appliedDate: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
-                status: randomStatus,
-                coverLetter: `Dear ${currentBusiness.ownerName}, I am very interested in joining ${currentBusiness.businessName} and believe my skills would be a great fit for your team. I have experience in ${currentBusiness.industry || "various fields"} and am excited about the opportunity to contribute to your organization.`,
-                experience: `${Math.floor(Math.random() * 5) + 1} years of relevant experience in ${currentBusiness.industry || "the field"}`,
-                skills: ["Communication", "Teamwork", "Problem Solving", "Leadership", "Technical Skills"].slice(
-                  0,
-                  Math.floor(Math.random() * 3) + 2,
-                ),
-              })
+                // Get status from localStorage or default to "pending"
+                const status = applicationStatuses[applicationId] || "pending"
+
+                businessApplications.push({
+                    id: applicationId,
+                    applicantEmail: app.userEmail,
+                    applicantName: applicantName,
+                    businessName: businessDetails.businessName,
+                    businessId: app.businessId,
+                    appliedDate: new Date(Date.now()).toISOString(),
+                    status: status,
+                    coverLetter: `Dear ${businessDetails.ownerName}, I am very interested in joining ${businessDetails.businessName} and believe my skills would be a great fit for your team. I have experience in ${businessDetails.industry || "various fields"} and am excited about the opportunity to contribute to your organization.`,
+                    experience: `${Math.floor(Math.random() * 5) + 1} years of relevant experience in ${businessDetails.industry || "the field"}`,
+                    skills: ["Communication", "Teamwork", "Problem Solving", "Leadership", "Technical Skills"].slice(
+                        0,
+                        Math.floor(Math.random() * 3) + 2,
+                    ),
+                })
             }
-          })
-        }
+        })
 
+        console.log("Generated applications:", businessApplications)
         setApplications(businessApplications)
-      }
+    }
 
-      const handleStatusChange = (applicationId, newStatus) => {
+    const handleStatusChange = (applicationId, newStatus) => {
+        // Update applications state
         setApplications((prev) => prev.map((app) => (app.id === applicationId ? { ...app, status: newStatus } : app)))
+
+        // Save status change to localStorage
+        const applicationStatuses = JSON.parse(localStorage.getItem("applicationStatuses") || "{}")
+        applicationStatuses[applicationId] = newStatus
+        localStorage.setItem("applicationStatuses", JSON.stringify(applicationStatuses))
 
         // Show confirmation message
         const applicant = applications.find((app) => app.id === applicationId)
         if (applicant) {
-          alert(`Application from ${applicant.applicantName} has been ${newStatus}!`)
+            alert(`Application from ${applicant.applicantName} has been ${newStatus}!`)
         }
-      }
+    }
 
-      const handleViewDetails = (application) => {
+    const handleViewDetails = (application) => {
         setSelectedApplication(application)
         setDialogOpen(true)
-      }
+    }
 
-      const handleMenuOpen = (event) => {
+    const handleMenuOpen = (event) => {
         setAnchorEl(event.currentTarget)
-      }
+    }
 
-      const handleMenuClose = () => {
+    const handleMenuClose = () => {
         setAnchorEl(null)
-      }
+    }
 
-      const handleLogout = () => {
+    const handleLogout = () => {
         localStorage.removeItem("signUpData")
         navigate("/signup")
-      }
+    }
 
-      const getInitials = (name) => {
+    const getInitials = (name) => {
         return (
-          name
-            ?.split(" ")
-            .map((word) => word.charAt(0))
-            .join("")
-            .toUpperCase()
-            .slice(0, 2) || "U"
+            name
+                ?.split(" ")
+                .map((word) => word.charAt(0))
+                .join("")
+                .toUpperCase()
+                .slice(0, 2) || "U"
         )
-      }
+    }
 
-      const getStatusColor = (status) => {
+    const getStatusColor = (status) => {
         switch (status) {
-          case "accepted":
-            return { bgcolor: "#e8f5e8", color: "#2e7d32" }
-          case "rejected":
-            return { bgcolor: "#ffebee", color: "#c62828" }
-          default:
-            return { bgcolor: "#fff3e0", color: "#ef6c00" }
+            case "accepted":
+                return { bgcolor: "#e8f5e8", color: "#2e7d32" }
+            case "rejected":
+                return { bgcolor: "#ffebee", color: "#c62828" }
+            default:
+                return { bgcolor: "#fff3e0", color: "#ef6c00" }
         }
-      }
+    }
 
-      const filteredApplications = applications.filter((app) => {
+    const filteredApplications = applications.filter((app) => {
         const matchesSearch =
-          app.applicantName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          app.applicantEmail.toLowerCase().includes(searchTerm.toLowerCase())
+            app.applicantName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            app.applicantEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            app.businessName.toLowerCase().includes(searchTerm.toLowerCase())
         const matchesStatus = statusFilter === "all" || app.status === statusFilter
         return matchesSearch && matchesStatus
-      })
+    })
 
-      const pendingCount = applications.filter((app) => app.status === "pending").length
-      const acceptedCount = applications.filter((app) => app.status === "accepted").length
-      const rejectedCount = applications.filter((app) => app.status === "rejected").length
+    const pendingCount = applications.filter((app) => app.status === "pending").length
+    const acceptedCount = applications.filter((app) => app.status === "accepted").length
+    const rejectedCount = applications.filter((app) => app.status === "rejected").length
 
-      if (!businessData) return null
+    if (!businessData) return null
 
     return (
         <Box sx={{ minHeight: "100vh", background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)" }}>
@@ -213,13 +209,10 @@ const JobApplied = () => {
             <AppBar position="static" sx={{ bgcolor: "white", color: "black", boxShadow: 1 }}>
                 <Toolbar>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 2, flexGrow: 1 }}>
-                        <Avatar sx={{ bgcolor: "#1976d2" }}>{getInitials(businessData.businessName)}</Avatar>
+                        <Avatar sx={{ bgcolor: "#1976d2" }}>{getInitials(businessData.email)}</Avatar>
                         <Box>
                             <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-                                {businessData.businessName}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                {businessData.ownerName}
+                                Business Dashboard
                             </Typography>
                         </Box>
                     </Box>
@@ -231,17 +224,6 @@ const JobApplied = () => {
                         <UserIcon />
                         <Typography sx={{ display: { xs: "none", md: "block" } }}>{businessData.email}</Typography>
                     </Button>
-
-                    <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
-                        <MenuItem onClick={handleMenuClose}>
-                            <UserIcon sx={{ mr: 1 }} />
-                            Profile
-                        </MenuItem>
-                        <MenuItem onClick={handleLogout}>
-                            <LogOutIcon sx={{ mr: 1 }} />
-                            Logout
-                        </MenuItem>
-                    </Menu>
                 </Toolbar>
             </AppBar>
 
@@ -260,7 +242,7 @@ const JobApplied = () => {
                         Job Applications Dashboard 📋
                     </Typography>
                     <Typography variant="h6" sx={{ opacity: 0.9, mb: 3 }}>
-                        Manage applications for {businessData.businessName} and connect with talented candidates.
+                        Manage applications for all your business opportunities and connect with talented candidates.
                     </Typography>
 
                     <Grid container spacing={2}>
@@ -303,7 +285,7 @@ const JobApplied = () => {
                         <Grid item xs={12} md={8}>
                             <TextField
                                 fullWidth
-                                placeholder="Search by applicant name or email..."
+                                placeholder="Search by applicant name, email, or business..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 InputProps={{
@@ -378,13 +360,19 @@ const JobApplied = () => {
                                                             </Typography>
                                                         </Box>
                                                         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                                            <BriefcaseIcon sx={{ fontSize: 16, color: "#666" }} />
+                                                            <Typography variant="body2" color="text.secondary">
+                                                                Applied to: {application.businessName}
+                                                            </Typography>
+                                                        </Box>
+                                                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                                                             <CalendarIcon sx={{ fontSize: 16, color: "#666" }} />
                                                             <Typography variant="body2" color="text.secondary">
                                                                 Applied on {new Date(application.appliedDate).toLocaleDateString()}
                                                             </Typography>
                                                         </Box>
                                                         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                                            <BriefcaseIcon sx={{ fontSize: 16, color: "#666" }} />
+                                                            <UserIcon sx={{ fontSize: 16, color: "#666" }} />
                                                             <Typography variant="body2" color="text.secondary">
                                                                 {application.experience}
                                                             </Typography>
@@ -485,6 +473,9 @@ const JobApplied = () => {
                             <Box sx={{ mb: 3 }}>
                                 <Typography variant="subtitle1" sx={{ fontWeight: "bold", mb: 1 }}>
                                     Application Details
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                                    Applied to: {selectedApplication.businessName}
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
                                     Applied on: {new Date(selectedApplication.appliedDate).toLocaleDateString()}

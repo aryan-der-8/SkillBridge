@@ -40,8 +40,11 @@ export default function Sidebar() {
                 },
             }}
         >
-            <Toolbar>
-                <Typography variant="h6" fontWeight={'bold'} noWrap>
+            <Toolbar sx={{ display: 'flex', flexDirection: 'column', alignItems:"center", marginRight: '10px' }}>
+                <Typography variant="h6" fontWeight={'bold'} marginTop={'10px'} noWrap>
+                    Business Dashboard
+                </Typography>
+                <Typography variant="body2" color="text.secondary" marginLeft={'80px'}>
                     <span>{ownerEmail.email}</span>
                 </Typography>
             </Toolbar>
