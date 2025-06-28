@@ -11,8 +11,8 @@ import AddBusinessIcon from '@mui/icons-material/AddBusiness';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 
-import skillBridge_logo from './component/skillBridge_logo.jpg'
-import { UserContext } from './context/UserContext';
+import skillBridge_logo from '../component/assests/skillBridge_logo.jpg';
+import { UserContext } from '../context/UserContext';
 import { emphasize } from '@mui/material';
 
 export default function Navbar() {
@@ -45,27 +45,15 @@ export default function Navbar() {
 
     const navigate = useNavigate();
 
-    // const signUpData = JSON.parse(localStorage.getItem("signUpData")) || [];
-    // const businessData = JSON.parse(localStorage.getItem("businessData")) || [];
-
-    //  if(signUpData) {
-    //     const updateData = businessData.filter((item) => item.email !== signUpData.email)
-    //     localStorage.setItem("businessData", JSON.stringify(updateData))
-    // }
-
     const logoutNavigation = () => {
         if (window.confirm("Are you sure to Logout..?")) {
             localStorage.removeItem('signUpData');
-            // localStorage.removeItem('businessData');
             localStorage.removeItem('BusinessRegister');
             setUser(false);
             setUserIcon(false);
             navigate('/signup')
         }
     }
-
-    // const BusinessReg = localStorage.getItem("BusinessRegister");
-    // console.log("BusinessReg",BusinessReg)
 
     return (
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingInline: "10px" }}>

@@ -26,10 +26,10 @@ import {
   Menu as MenuIcon,
 } from "@mui/icons-material"
 import { useNavigate } from "react-router"
-import success from "./success.jpg"
+import success from "../component/assests/success.jpg"
 
 
-function Home() {
+export default function Home() {
   const muiTheme = useTheme()
   const isMobile = useMediaQuery(muiTheme.breakpoints.down("md"))
 
@@ -769,12 +769,3 @@ function Home() {
     </Box>
   )
 }
-
-export default Home
-
-// Main App component with Theme Provider
-// export default function App() {
-//   return (
-//       <HomePage />
-//   )
-// }

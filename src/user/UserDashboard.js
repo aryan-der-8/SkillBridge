@@ -46,6 +46,9 @@ const UserDashboard = () => {
     const [appliedBusinesses, setAppliedBusinesses] = useState([])
     const [anchorEl, setAnchorEl] = useState(null)
 
+    const [selectedCardIndex, setSelectedCardIndex] = useState(null);
+
+
     useEffect(() => {
         // Check user authentication
         const userData = JSON.parse(localStorage.getItem("signUpData") || "{}")
@@ -223,7 +226,7 @@ const UserDashboard = () => {
                             return (
                                 <Grid container size={{ xs: 12, sm: 6, lg: 4 }} key={index}  >
                                     <Card
-
+                                        onClick={() => setSelectedCardIndex(index)}
                                         sx={{
                                             height: "100%",
                                             width: "300px",
@@ -249,11 +252,11 @@ const UserDashboard = () => {
                                                             fontWeight: "bold",
                                                         }}
                                                     >
-                                                        {getInitials(business.businessName || "Business")}
+                                                        {getInitials(business.jobTitle || "Business")}
                                                     </Avatar>
                                                     <Box>
                                                         <Typography variant="h6" sx={{ fontWeight: "bold", color: "#1a1a1a" }}>
-                                                            {business.businessName || "Unnamed Business"}
+                                                            {business.jobTitle || "Unnamed Business"}
                                                         </Typography>
                                                         <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                                                             <UserIcon sx={{ fontSize: 14, color: "#666" }} />
@@ -283,7 +286,7 @@ const UserDashboard = () => {
                                                     overflow: "hidden",
                                                 }}
                                             >
-                                                {business.about ||
+                                                {business.description ||
                                                     "Exciting business opportunity to gain valuable experience and grow your professional skills."}
                                             </Typography>
 
@@ -292,7 +295,7 @@ const UserDashboard = () => {
                                                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                                                     <BusinessIcon sx={{ fontSize: 16, color: "#666" }} />
                                                     <Typography variant="body2" color="text.secondary">
-                                                        {business.industry || "Various Industries"}
+                                                        {business.jobCategory || "Various Industries"}
                                                     </Typography>
                                                 </Box>
                                                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -310,7 +313,7 @@ const UserDashboard = () => {
                                                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                                                     <UsersIcon sx={{ fontSize: 16, color: "#666" }} />
                                                     <Typography variant="body2" color="text.secondary">
-                                                        {business.positions || Math.floor(Math.random() * 8) + 2} positions available
+                                                        {business.openings || Math.floor(Math.random() * 8) + 2} positions available
                                                     </Typography>
                                                 </Box>
                                             </Box>
@@ -339,6 +342,31 @@ const UserDashboard = () => {
                                             </Button>
                                         </CardActions>
                                     </Card>
+                                    {selectedCardIndex === index && (
+                                        <Box sx={{ mt: 2, p: 2, border: "1px solid #ddd", borderRadius: 2, background: "#fafafa" }}>
+                                            <Typography variant="subtitle1" sx={{ fontWeight: "bold", mb: 1 }}>Full Details:</Typography>
+                                            <Typography variant="body2"><strong>Description:</strong> {business.description}</Typography>
+                                            <Typography variant="body2"><strong>Location:</strong> {business.location}</Typography>
+                                            <Typography variant="body2"><strong>Duration:</strong> {business.duration}</Typography>
+                                            <Typography variant="body2"><strong>Timing:</strong> {business.timing || "Not specified"}</Typography>
+                                            <Typography variant="body2"><strong>Skills:</strong> {(business.skillsRequired || []).join(", ")}</Typography>
+                                            <Typography variant="body2"><strong>Salary:</strong> {business.salary ? `₹${business.salary}` : "Unpaid / Not mentioned"}</Typography>
+                                            <Typography variant="body2"><strong>Openings:</strong> {business.openings}</Typography>
+
+                                            <Box sx={{ mt: 2, display: "flex", gap: 2 }}>
+                                                <Button
+                                                    variant="contained"
+                                                    disabled={isApplied || business.email === signUpData.email}
+                                                    onClick={() => handleApply(business)}
+                                                >
+                                                    Apply Now
+                                                </Button>
+                                                <Button variant="outlined" onClick={() => setSelectedCardIndex(null)}>
+                                                    Cancel
+                                                </Button>
+                                            </Box>
+                                        </Box>
+                                    )}
                                 </Grid>
                             )
                         })}

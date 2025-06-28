@@ -45,7 +45,7 @@ export default function BusinessList() {
                             <TableCell><strong>Name</strong></TableCell>
                             <TableCell><strong>Owner</strong></TableCell>
                             <TableCell><strong>City</strong></TableCell>
-                            <TableCell><strong>Type</strong></TableCell>
+                            <TableCell><strong>DeadLine</strong></TableCell>
                             <TableCell><strong>Action</strong></TableCell>
                         </TableRow>
                     </TableHead>
@@ -54,10 +54,10 @@ export default function BusinessList() {
                         {businesses.map((b, i) => (
                             <TableRow key={i}>
                                 <TableCell>{i + 1}</TableCell>
-                                <TableCell>{b.businessName}</TableCell>
+                                <TableCell>{b.jobTitle}</TableCell>
                                 <TableCell>{b.ownerName}</TableCell>
-                                <TableCell>{b.city}</TableCell>
-                                <TableCell>{b.businessType}</TableCell>
+                                <TableCell>{b.location}</TableCell>
+                                <TableCell>{b.applicationDeadline}</TableCell>
                                 <TableCell>
 
                                     <IconButton color="error" onClick={() => handleDelete(i)}>
