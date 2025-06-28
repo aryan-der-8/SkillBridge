@@ -69,27 +69,23 @@ export default function Navbar() {
                     }}
                 >
                     <BottomNavigationAction component={Link} to="/home" label="Home" icon={<HomeIcon />} sx={{ marginRight: "20px" }} />
-                    {user ?
-                        <BottomNavigationAction component={Link} value={2} to="/businessDashboard" label="Business" icon={<AddBusinessIcon />} sx={{ marginRight: "20px"}} />
-                        :
-                        <BottomNavigationAction component={Link} value={1} to="/signup" label="Register" icon={<AssignmentIndIcon />} sx={{ marginRight: "20px" }} />
-                    }
-                    {
-                        userIcon && <BottomNavigationAction component={Link} value={2} to="/userDashboard" label="User" icon={<PersonAddAltIcon />} sx={{ marginRight: "20px" }} />
-                    }
-                    {
-                        userIcon ? <BottomNavigationAction
-                            onClick={logoutNavigation}
-                            value={3} label="Logout" icon={<ExitToAppIcon />} sx={{ marginRight: "20px" }} />
-                            : null
-                    }
                     {
                         user ?
-                        <BottomNavigationAction
-                            onClick={logoutNavigation}
-                            value={3} label="Logout" icon={<ExitToAppIcon />} sx={{ marginRight: "20px" }} />
+                            <BottomNavigationAction component={Link} value={2} to="/businessDashboard" label="Business" icon={<AddBusinessIcon />} sx={{ marginRight: "20px" }} />
+                            :
+                            userIcon ?
+                                <BottomNavigationAction component={Link} value={2} to="/userDashboard" label="User" icon={<PersonAddAltIcon />} sx={{ marginRight: "20px" }} />
+                                :
+                                <BottomNavigationAction component={Link} value={1} to="/signup" label="Register" icon={<AssignmentIndIcon />} sx={{ marginRight: "20px" }} />
+                    }
+                    {
+                        user || userIcon ?
+                            <BottomNavigationAction
+                                onClick={logoutNavigation}
+                                value={3} label="Logout" icon={<ExitToAppIcon />} sx={{ marginRight: "20px" }} />
                             : null
-                        }
+                    }
+
 
                 </BottomNavigation>
             </Box>

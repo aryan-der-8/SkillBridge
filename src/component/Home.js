@@ -30,9 +30,6 @@ import success from "../component/assests/success.jpg"
 
 
 export default function Home() {
-  const muiTheme = useTheme()
-  const isMobile = useMediaQuery(muiTheme.breakpoints.down("md"))
-
   const navigate = useNavigate();
 
   const navigatePage = () => {
@@ -43,8 +40,14 @@ export default function Home() {
     navigate("/businessDashboard/register");
   }
 
+  const signupData = JSON.parse(localStorage.getItem("signupData")) || {};
   const navigateUserDashboard = () => {
-    navigate("/userDashboard");
+    if (signupData.length >= 0) {
+      navigate("/userDashboard");
+    }
+    else {
+      navigate("/signup");
+    }
   }
 
   const isBusinessRegistered = localStorage.getItem("BusinessRegister") === "true";
@@ -145,7 +148,7 @@ export default function Home() {
             </Grid>
           </Grid>
 
-          <Grid size={{xs:12, lg:6}}>
+          <Grid size={{ xs: 12, lg: 6 }}>
             <Box sx={{ position: "relative", ml: { xs: 0, lg: 8 }, mt: 4 }}>
               {/* Image Container with Overlay */}
               <Box

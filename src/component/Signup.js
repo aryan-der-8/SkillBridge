@@ -75,7 +75,7 @@ export default function Signup() {
                         // localStorage.setItem("BusinessRegister", JSON.stringify(user));
                     } 
                     if(userType == "user") {
-                        navigate('/userDashboard');
+                        navigate('/user');
                         // setUserIcon(true);
                     }
                 }, 400)
