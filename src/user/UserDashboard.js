@@ -38,10 +38,10 @@ const UserDashboard = () => {
   const [signUpData, setSignUpData] = useState(null)
   const [appliedBusinesses, setAppliedBusinesses] = useState([])
   const [anchorEl, setAnchorEl] = useState(null)
-  const [selectedCardIndex, setSelectedCardIndex] = useState(null)
+  const [selectedCardIndex, setSelectedCardIndex] = useState([])
   const [open, setOpen] = useState(false)
   const [selectedBusiness, setSelectedBusiness] = useState(null)
-
+  
   useEffect(() => {
     // Check user authentication
     const userData = JSON.parse(localStorage.getItem("signUpData") || "{}")
@@ -59,9 +59,9 @@ const UserDashboard = () => {
     // Load applied businesses from localStorage
     const appliedData = JSON.parse(localStorage.getItem("appliedBusinesses") || "[]")
     setAppliedBusinesses(appliedData)
-  }, [navigate])
+  }, [navigate,selectedCardIndex])
 
-  const handleApply = (businessToApply) => {
+  const handleApply = (businessToApply, index) => {
     if (!signUpData || !signUpData.email) {
       alert("Please log in to apply for jobs.")
       return
@@ -93,6 +93,7 @@ const UserDashboard = () => {
 
     // Create new application entry for ONLY this specific business
     const newApplication = {
+      idx: index, 
       businessId: businessId,
       userEmail: signUpData.email,
       appliedDate: new Date().toISOString(),
@@ -113,6 +114,9 @@ const UserDashboard = () => {
     // Update state
     setAppliedBusinesses(updatedApplications)
     setBusinesses((prev) => [...prev]);
+
+    // mark this button as disabled
+    setSelectedCardIndex((prev) => [...prev, index]);
 
     alert(`Application submitted successfully to ${businessToApply.businessName}!`)
   }
@@ -392,10 +396,10 @@ const UserDashboard = () => {
                         color={isApplied ? "inherit" : "success"}
                         onClick={(e) => {
                           e.stopPropagation()
-                          console.log("Apply button clicked for:", business.businessName)
-                          handleApply(business)
+                          handleApply(business, index)
                         }}
-                        disabled={isApplied || isOwnBusiness}
+
+                        disabled={appliedBusinesses.some(app => app.idx === index) || isOwnBusiness}
                         endIcon={!isApplied && !isOwnBusiness ? <ChevronRightIcon /> : null}
                         sx={{
                           textTransform: "none",
