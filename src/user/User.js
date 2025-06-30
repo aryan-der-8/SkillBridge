@@ -1,224 +1,360 @@
-import React, { useContext, useState } from 'react';
+import React, { useState, useContext } from "react";
 import {
   Grid,
   TextField,
   Button,
-  IconButton,
-  InputAdornment,
-  FormControl,
-  InputLabel,
-  Input,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
-  Typography,
-  Box,
   Paper,
-  Container,
-  CardActionArea,
-  CardContent,
-  Checkbox,
-  Card,
-} from '@mui/material';
-
-import { Visibility, VisibilityOff, Male, Female, Transgender } from '@mui/icons-material';
-import { useNavigate } from 'react-router';
-import { UserContext } from '../context/UserContext';
+  Box,
+  Typography,
+  MenuItem,
+  Autocomplete,
+  Avatar,
+} from "@mui/material";
+import { useNavigate } from "react-router";
+import { UserContext } from "../context/UserContext";
 
 export default function User() {
-
   const signupData = JSON.parse(localStorage.getItem("signUpData"));
-  
-  const [email, setEmail] = useState(signupData.email);
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [city, setCity] = useState('');
-  const [phone, setPhone] = useState('');
-  const [password, setPassword] = useState('');
-  const [state, setState] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [gender, setGender] = useState('');
-
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
-  const handleMouseDownPassword = (e) => e.preventDefault();
-
   const navigate = useNavigate();
+  const { userData, setUserData } = useContext(UserContext);
 
-  const {userData, setUserData} = useContext(UserContext)
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: signupData.email || "",
+    phone: "",
+    age: "",
+    gender: "",
+    location: "",
+    education: "",
+    skills: [],
+    experience: "",
+    workPreference: "",
+    preferredIndustry: "",
+    expectedSalary: "",
+    availability: "",
+    about: "",
+    profileImage: null,
+  });
 
-  const submitHandle = (e) => {
+  const skillsOptions = [
+    "Communication",
+    "Leadership",
+    "React",
+    "Tailwind CSS",
+    "Marketing",
+    "Sales",
+    "UI/UX",
+    "Data Entry",
+    "Project Management",
+    "Business Analysis",
+  ];
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    setFormData((prev) => ({ ...prev, profileImage: file }));
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-    if(phone.length !== 10) {
-      alert("Enter valid phone number");
-      return
+    if (formData.phone.length !== 10) {
+      alert("Enter valid 10-digit phone number");
+      return;
     }
 
     setUserData({
       ...userData,
-      firstName,
-      lastName,
-      email,
-      phone,
-      city,
-      state,
-      gender,
-      password,
+      ...formData,
     });
 
-    navigate('/userInterest');
+    navigate("/userInterest");
   };
 
   return (
-    <Box component="form" onSubmit={submitHandle} sx={{ p: 4 }}>
-      <h1 style={{ width: "60%", marginInline: 'auto', backgroundColor: "#1976d2", color: "#fff", borderRadius: "5px", paddingBottom: "5px" }}>User Details</h1>
-      <Paper elevation={3} sx={{ p: 4, borderRadius: 4 }}>
-        <Grid container columnSpacing={10} rowSpacing={3}>
-          {/* Row 1: Name and Password */}
-          <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>
-            <TextField
-            required
-              fullWidth
-              label="First Name"
-              variant="standard"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              sx={{ borderRadius: '12px' }}
-            />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>
-            <TextField
-            required
-              fullWidth
-              label="Last Name"
-              variant="standard"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              sx={{ borderRadius: '12px' }}
-            />
-          </Grid>
+    <Box sx={{ background: "#f5f7fa", py: 4, minHeight: "100vh" }}>
+      <Paper
+        elevation={6}
+        sx={{
+          maxWidth: 900,
+          margin: "0 auto",
+          p: 4,
+          borderRadius: "20px",
+          background: "#ffffff",
+        }}
+      >
+        <Typography
+          variant="h5"
+          sx={{
+            mb: 3,
+            fontWeight: "bold",
+            color: "gray",
+            textAlign: "center",
+          }}
+        >
+          Complete <span style={{color:"#333", fontWeight:'bold'}}>{signupData.email}</span> Your Profile
+        </Typography>
 
-          {/* Row 2: Email full width */}
-          <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>
-            <TextField
-            required
-              fullWidth
-              label="Email"
-              variant="standard"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              sx={{ borderRadius: '12px' }}
-            />
-          </Grid>
-
-          <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>
-            <FormControl fullWidth variant="outlined">
-              <InputLabel required>Password</InputLabel>
-              <Input
-              
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                }
+        <form onSubmit={handleSubmit}>
+          <Grid container spacing={3}>
+            {/* firstName + lastName */}
+            <Grid size={{xs:12, sm:6}}>
+              <TextField
+                label="First Name"
+                name="firstName"
+                required
+                variant="outlined"
+                fullWidth
+                value={formData.firstName}
+                onChange={handleChange}
+                sx={{ borderRadius: 2 }}
               />
-            </FormControl>
-          </Grid>
+            </Grid>
+            <Grid size={{xs:12, sm:6}}>
+              <TextField
+                label="Last Name"
+                name="lastName"
+                variant="outlined"
+                fullWidth
+                value={formData.lastName}
+                onChange={handleChange}
+                sx={{ borderRadius: 2 }}
+              />
+            </Grid>
 
+            {/* email */}
+            <Grid size={{xs:12}}>
+              <TextField
+                label="Email"
+                name="email"
+                type="email"
+                required
+                variant="outlined"
+                fullWidth
+                value={formData.email}
+                onChange={handleChange}
+                sx={{ borderRadius: 2 }}
+              />
+            </Grid>
 
+            {/* phone + age */}
+            <Grid size={{xs:12, sm:6}}>
+              <TextField
+                label="Phone"
+                name="phone"
+                required
+                type="tel"
+                variant="outlined"
+                fullWidth
+                value={formData.phone}
+                onChange={handleChange}
+                sx={{ borderRadius: 2 }}
+              />
+            </Grid>
+            <Grid size={{xs:12, sm:6}}>
+              <TextField
+                label="Age"
+                name="age"
+                type="number"
+                variant="outlined"
+                fullWidth
+                value={formData.age}
+                onChange={handleChange}
+                sx={{ borderRadius: 2 }}
+              />
+            </Grid>
 
-          {/* Row 3: Phone full width */}
-          <Grid size={{ xs: 12, sm: 4, md: 4, lg: 4, xl: 4 }}>
-            <TextField
-            required
-              fullWidth
-              label="Phone"
-              variant="standard"
-              type="number"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              sx={{ borderRadius: '12px' }}
-            />
-          </Grid>
-
-          {/* Row 4: City full width */}
-          <Grid size={{ xs: 12, sm: 4, md: 4, lg: 4, xl: 4 }}>
-            <TextField
-            required
-              fullWidth
-              label="City"
-              variant="standard"
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
-              sx={{ borderRadius: '12px' }}
-            />
-          </Grid>
-
-          {/* Row 4: City full width */}
-          <Grid size={{ xs: 12, sm: 4, md: 4, lg: 4, xl: 4 }}>
-            <TextField
-              fullWidth
-              label="State"
-              variant="standard"
-              value={state}
-              onChange={(e) => setState(e.target.value)}
-              sx={{ borderRadius: '12px' }}
-            />
-          </Grid>
-
-          {/* Row 5: Gender selection */}
-          <Grid  size={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}>
-            <FormControl component="fieldset" >
-              <Typography fontWeight={'bold'} textAlign={'center'} variant="subtitle1" mb={1}>
-                Gender
-              </Typography>
-              <RadioGroup
-                row
-                value={gender}
-                onChange={(e) => setGender(e.target.value)}
+            {/* gender + location */}
+            <Grid size={{xs:12, sm:6}}>
+              <TextField
+                select
+                label="Gender"
+                name="gender"
+                variant="outlined"
+                fullWidth
+                value={formData.gender}
+                onChange={handleChange}
+                sx={{ borderRadius: 2 }}
               >
-                <FormControlLabel
-                  value="male"
-                  control={<Radio icon={<Male />} checkedIcon={<Male />} />}
-                  label="Male"
+                <MenuItem value="">Prefer not to say</MenuItem>
+                <MenuItem value="Male">Male</MenuItem>
+                <MenuItem value="Female">Female</MenuItem>
+                <MenuItem value="Other">Other</MenuItem>
+              </TextField>
+            </Grid>
+            <Grid size={{xs:12, sm:6}}>
+              <TextField
+                label="Location"
+                name="location"
+                variant="outlined"
+                fullWidth
+                value={formData.location}
+                onChange={handleChange}
+                sx={{ borderRadius: 2 }}
+              />
+            </Grid>
+
+            {/* education + experience */}
+            <Grid size={{xs:12, sm:6}}>
+              <TextField
+                label="Education / University "
+                name="education"
+                variant="outlined"
+                fullWidth
+                value={formData.education}
+                onChange={handleChange}
+                sx={{ borderRadius: 2 }}
+              />
+            </Grid>
+            <Grid size={{xs:12, sm:6}}>
+              <TextField
+                label="Experience (e.g. 2 years)"
+                name="experience"
+                variant="outlined"
+                fullWidth
+                value={formData.experience}
+                onChange={handleChange}
+                sx={{ borderRadius: 2 }}
+              />
+            </Grid>
+
+            {/* skills */}
+            <Grid size={{xs:12}}>
+              <Autocomplete
+                multiple
+                freeSolo
+                options={skillsOptions}
+                value={formData.skills}
+                onChange={(e, newValue) =>
+                  setFormData((prev) => ({ ...prev, skills: newValue }))
+                }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Skills"
+                    placeholder="Add skills"
+                    variant="outlined"
+                    sx={{ borderRadius: 2 }}
+                    required
+                  />
+                )}
+              />
+            </Grid>
+
+            {/* work preference + preferred industry */}
+            <Grid size={{xs:12, sm:6}}>
+              <TextField
+                label="Work Preference"
+                name="workPreference"
+                placeholder="On-site, Remote, Hybrid"
+                variant="outlined"
+                fullWidth
+                value={formData.workPreference}
+                onChange={handleChange}
+                sx={{ borderRadius: 2 }}
+              />
+            </Grid>
+            <Grid size={{xs:12, sm:6}}>
+              <TextField
+                label="Preferred Industry"
+                name="preferredIndustry"
+                placeholder="e.g. IT, Marketing, Construction"
+                variant="outlined"
+                fullWidth
+                value={formData.preferredIndustry}
+                onChange={handleChange}
+                sx={{ borderRadius: 2 }}
+              />
+            </Grid>
+
+            {/* expected salary + availability */}
+            <Grid size={{xs:12, sm:6}}>
+              <TextField
+                label="Expected Salary"
+                name="expectedSalary"
+                placeholder="e.g. 25000/month"
+                variant="outlined"
+                fullWidth
+                value={formData.expectedSalary}
+                onChange={handleChange}
+                sx={{ borderRadius: 2 }}
+              />
+            </Grid>
+            <Grid size={{xs:12, sm:6}}>
+              <TextField
+                label="Availability"
+                name="availability"
+                placeholder="Immediately, 1 week, 1 month"
+                variant="outlined"
+                fullWidth
+                value={formData.availability}
+                onChange={handleChange}
+                sx={{ borderRadius: 2 }}
+              />
+            </Grid>
+
+            {/* about */}
+            <Grid size={{xs:12}}>
+              <TextField
+                name="about"
+                label="About You"
+                variant="outlined"
+                multiline
+                rows={3}
+                fullWidth
+                value={formData.about}
+                onChange={handleChange}
+                sx={{ borderRadius: 2 }}
+              />
+            </Grid>
+
+            {/* profile image upload */}
+            <Grid size={{xs:12, sm:6}}>
+              <Button variant="contained" component="label" sx={{ borderRadius: 2 }}>
+                Upload Profile Image
+                <input
+                  type="file"
+                  accept="image/*"
+                  hidden
+                  onChange={handleImageUpload}
                 />
-                <FormControlLabel
-                  value="female"
-                  control={<Radio icon={<Female />} checkedIcon={<Female />} />}
-                  label="Female"
+              </Button>
+              {formData.profileImage && (
+                <Avatar
+                  src={URL.createObjectURL(formData.profileImage)}
+                  sx={{ mt: 2, width: 64, height: 64 }}
                 />
-                <FormControlLabel
-                  value="other"
-                  control={<Radio icon={<Transgender />} checkedIcon={<Transgender />} />}
-                  label="Other"
-                />
-              </RadioGroup>
-            </FormControl>
+              )}
+            </Grid>
+
+            {/* submit */}
+            <Grid size={{xs:12}}>
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth
+                sx={{
+                  mt: 2,
+                  py: 1.5,
+                  borderRadius: 3,
+                  fontWeight: "bold",
+                  background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                  textTransform: "none",
+                }}
+              >
+                Next
+              </Button>
+            </Grid>
           </Grid>
-
-
-          {/* Submit Button */}
-          <Box sx={{width:'12%' ,display:'flex', justifyContent:'center', margin:"auto"}}>
-            <Button
-              variant="contained"
-              color="primary"
-              type="submit"
-              fullWidth sx={{ py: "10px", px:"40px", marginTop:"30px"
-              }}>
-              Next
-            </Button>
-          </Box>
-        </Grid>
+        </form>
       </Paper>
     </Box>
   );

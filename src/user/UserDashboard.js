@@ -97,7 +97,7 @@ const UserDashboard = () => {
       businessId: businessId,
       userEmail: signUpData.email,
       appliedDate: new Date().toISOString(),
-      businessName: businessToApply.businessName,
+      businessName: businessToApply.jobTitle,
       jobTitle: businessToApply.jobTitle,
     }
 
@@ -118,7 +118,7 @@ const UserDashboard = () => {
     // mark this button as disabled
     setSelectedCardIndex((prev) => [...prev, index]);
 
-    alert(`Application submitted successfully to ${businessToApply.businessName}!`)
+    alert(`Application submitted successfully to ${businessToApply.jobTitle}!`)
   }
 
   const handleMenuOpen = (event) => {
@@ -165,7 +165,7 @@ const UserDashboard = () => {
 
   // Check if current user has applied to a specific business
   const isBusinessApplied = (business) => {
-    const businessId = `${business.businessName}_${business.ownerName}`
+    const businessId = `${business.jobTitle}_${business.ownerName}`
     return appliedBusinesses.some((entry) => entry.businessId === businessId && entry.userEmail === signUpData.email)
   }
 

@@ -56,7 +56,6 @@ const JobApplied = () => {
             navigate("/signup")
             return
         }
-
         setBusinessData(userData)
         loadApplications(userData.email)
     }, [navigate])
@@ -65,7 +64,6 @@ const JobApplied = () => {
         // Get all businesses owned by this user email
         const allBusinessData = JSON.parse(localStorage.getItem("businessData") || "[]")
         const myBusinesses = allBusinessData.filter(business => business.email === businessOwnerEmail)
-        
         console.log("All my businesses:", myBusinesses)
 
         if (myBusinesses.length === 0) {
@@ -78,7 +76,7 @@ const JobApplied = () => {
         console.log("All applied businesses:", appliedBusinesses)
 
         // Get all business IDs that belong to the current business owner
-        const myBusinessIds = myBusinesses.map(business => `${business.businessName}_${business.ownerName}`)
+        const myBusinessIds = myBusinesses.map(business => `${business.jobTitle}_${business.ownerName}`)
         console.log("My business IDs:", myBusinessIds)
 
         // Filter applications that are for any of my businesses
@@ -96,7 +94,7 @@ const JobApplied = () => {
         applicationsForMyBusinesses.forEach((app, index) => {
             // Find the business details for this application
             const businessDetails = myBusinesses.find(business => 
-                `${business.businessName}_${business.ownerName}` === app.businessId
+                `${business.jobTitle}_${business.ownerName}` === app.businessId
             )
 
             if (businessDetails) {
@@ -125,6 +123,7 @@ const JobApplied = () => {
                         Math.floor(Math.random() * 3) + 2,
                     ),
                 })
+                console.log("dattta",businessApplications);
             }
         })
 
