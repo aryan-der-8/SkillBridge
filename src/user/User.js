@@ -27,14 +27,12 @@ export default function User() {
     gender: "",
     location: "",
     education: "",
-    skills: [],
     experience: "",
     workPreference: "",
     preferredIndustry: "",
     expectedSalary: "",
     availability: "",
     about: "",
-    profileImage: null,
   });
 
   const skillsOptions = [
@@ -56,11 +54,6 @@ export default function User() {
       ...prev,
       [name]: value,
     }));
-  };
-
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    setFormData((prev) => ({ ...prev, profileImage: file }));
   };
 
   const handleSubmit = (e) => {
@@ -100,13 +93,13 @@ export default function User() {
             textAlign: "center",
           }}
         >
-          Complete <span style={{color:"#333", fontWeight:'bold'}}>{signupData.email}</span> Your Profile
+          Complete <span style={{ color: "#333", fontWeight: 'bold' }}>{signupData.email}</span> Your Profile
         </Typography>
 
         <form onSubmit={handleSubmit}>
           <Grid container spacing={3}>
             {/* firstName + lastName */}
-            <Grid size={{xs:12, sm:6}}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="First Name"
                 name="firstName"
@@ -118,7 +111,7 @@ export default function User() {
                 sx={{ borderRadius: 2 }}
               />
             </Grid>
-            <Grid size={{xs:12, sm:6}}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Last Name"
                 name="lastName"
@@ -131,7 +124,7 @@ export default function User() {
             </Grid>
 
             {/* email */}
-            <Grid size={{xs:12}}>
+            <Grid size={{ xs: 12 }}>
               <TextField
                 label="Email"
                 name="email"
@@ -146,7 +139,7 @@ export default function User() {
             </Grid>
 
             {/* phone + age */}
-            <Grid size={{xs:12, sm:6}}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Phone"
                 name="phone"
@@ -159,7 +152,7 @@ export default function User() {
                 sx={{ borderRadius: 2 }}
               />
             </Grid>
-            <Grid size={{xs:12, sm:6}}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Age"
                 name="age"
@@ -173,7 +166,7 @@ export default function User() {
             </Grid>
 
             {/* gender + location */}
-            <Grid size={{xs:12, sm:6}}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 select
                 label="Gender"
@@ -190,7 +183,7 @@ export default function User() {
                 <MenuItem value="Other">Other</MenuItem>
               </TextField>
             </Grid>
-            <Grid size={{xs:12, sm:6}}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Location"
                 name="location"
@@ -203,7 +196,7 @@ export default function User() {
             </Grid>
 
             {/* education + experience */}
-            <Grid size={{xs:12, sm:6}}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Education / University "
                 name="education"
@@ -214,7 +207,7 @@ export default function User() {
                 sx={{ borderRadius: 2 }}
               />
             </Grid>
-            <Grid size={{xs:12, sm:6}}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Experience (e.g. 2 years)"
                 name="experience"
@@ -226,31 +219,8 @@ export default function User() {
               />
             </Grid>
 
-            {/* skills */}
-            <Grid size={{xs:12}}>
-              <Autocomplete
-                multiple
-                freeSolo
-                options={skillsOptions}
-                value={formData.skills}
-                onChange={(e, newValue) =>
-                  setFormData((prev) => ({ ...prev, skills: newValue }))
-                }
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Skills"
-                    placeholder="Add skills"
-                    variant="outlined"
-                    sx={{ borderRadius: 2 }}
-                    required
-                  />
-                )}
-              />
-            </Grid>
-
             {/* work preference + preferred industry */}
-            <Grid size={{xs:12, sm:6}}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Work Preference"
                 name="workPreference"
@@ -262,7 +232,7 @@ export default function User() {
                 sx={{ borderRadius: 2 }}
               />
             </Grid>
-            <Grid size={{xs:12, sm:6}}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Preferred Industry"
                 name="preferredIndustry"
@@ -276,7 +246,7 @@ export default function User() {
             </Grid>
 
             {/* expected salary + availability */}
-            <Grid size={{xs:12, sm:6}}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Expected Salary"
                 name="expectedSalary"
@@ -288,7 +258,7 @@ export default function User() {
                 sx={{ borderRadius: 2 }}
               />
             </Grid>
-            <Grid size={{xs:12, sm:6}}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Availability"
                 name="availability"
@@ -302,7 +272,7 @@ export default function User() {
             </Grid>
 
             {/* about */}
-            <Grid size={{xs:12}}>
+            <Grid size={{ xs: 12 }}>
               <TextField
                 name="about"
                 label="About You"
@@ -316,27 +286,9 @@ export default function User() {
               />
             </Grid>
 
-            {/* profile image upload */}
-            <Grid size={{xs:12, sm:6}}>
-              <Button variant="contained" component="label" sx={{ borderRadius: 2 }}>
-                Upload Profile Image
-                <input
-                  type="file"
-                  accept="image/*"
-                  hidden
-                  onChange={handleImageUpload}
-                />
-              </Button>
-              {formData.profileImage && (
-                <Avatar
-                  src={URL.createObjectURL(formData.profileImage)}
-                  sx={{ mt: 2, width: 64, height: 64 }}
-                />
-              )}
-            </Grid>
 
             {/* submit */}
-            <Grid size={{xs:12}}>
+            <Grid size={{ xs: 12 }}>
               <Button
                 type="submit"
                 variant="contained"
