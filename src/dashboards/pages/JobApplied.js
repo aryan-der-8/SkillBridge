@@ -64,7 +64,6 @@ const JobApplied = () => {
         // Get all businesses owned by this user email
         const allBusinessData = JSON.parse(localStorage.getItem("businessData") || "[]")
         const myBusinesses = allBusinessData.filter(business => business.email === businessOwnerEmail)
-        console.log("All my businesses:", myBusinesses)
 
         if (myBusinesses.length === 0) {
             setApplications([])
@@ -73,34 +72,32 @@ const JobApplied = () => {
 
         // Get all applied businesses from localStorage
         const appliedBusinesses = JSON.parse(localStorage.getItem("appliedBusinesses") || "[]")
-        console.log("All applied businesses:", appliedBusinesses)
 
         // Get all business IDs that belong to the current business owner
         const myBusinessIds = myBusinesses.map(business => `${business.jobTitle}_${business.ownerName}`)
-        console.log("My business IDs:", myBusinessIds)
 
         // Filter applications that are for any of my businesses
         const applicationsForMyBusinesses = appliedBusinesses.filter(app =>
             myBusinessIds.includes(app.businessId)
         )
-        console.log("Applications for my businesses:", applicationsForMyBusinesses)
+
+        console.log(applicationsForMyBusinesses);
 
         // Get existing application statuses from localStorage
         const applicationStatuses = JSON.parse(localStorage.getItem("applicationStatuses") || "{}")
 
         // Generate full application data
         const businessApplications = []
-        
         applicationsForMyBusinesses.forEach((app, index) => {
             // Find the business details for this application
-            const businessDetails = myBusinesses.find(business => 
+            const businessDetails = myBusinesses.find(business =>
                 `${business.jobTitle}_${business.ownerName}` === app.businessId
             )
 
             if (businessDetails) {
                 // Generate unique application ID
                 const applicationId = `${app.businessId}_${app.userEmail}`
-                
+
                 // Generate applicant name from email (simple approach)
                 const applicantName = app.userEmail.split('@')[0].replace('.', ' ').split(' ')
                     .map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
@@ -108,26 +105,32 @@ const JobApplied = () => {
                 // Get status from localStorage or default to "pending"
                 const status = applicationStatuses[applicationId] || "pending"
 
+                const userLoginData = JSON.parse(localStorage.getItem('userLoginData'));
+
                 businessApplications.push({
                     id: applicationId,
                     applicantEmail: app.userEmail,
-                    applicantName: applicantName,
-                    businessName: businessDetails.businessName,
+                    age: `${app.age} year`,
+                    applicantName: app.jobTitle,
+                    availability: app.availability,
+                    education: app.education,
+                    expectedSalary: app.expectedSalary,
+                    gender: app.gender,
+                    location: app.location,
+                    phone: app.phone,
+                    businessName: app.businessName,
+                    workPreference: app.workPreference,
+                    userName: app.userName,
                     businessId: app.businessId,
-                    appliedDate: new Date(Date.now()).toISOString(),
+                    appliedDate: app.appliedDate,
                     status: status,
-                    coverLetter: `Dear ${businessDetails.ownerName}, I am very interested in joining ${businessDetails.businessName} and believe my skills would be a great fit for your team. I have experience in ${businessDetails.industry || "various fields"} and am excited about the opportunity to contribute to your organization.`,
-                    experience: `${Math.floor(Math.random() * 5) + 1} years of relevant experience in ${businessDetails.industry || "the field"}`,
-                    skills: ["Communication", "Teamwork", "Problem Solving", "Leadership", "Technical Skills"].slice(
-                        0,
-                        Math.floor(Math.random() * 3) + 2,
-                    ),
+                    userEmail: app.userEmail,
+                    about: app.about,
+                    experience: `${app.experience} year`,
+                    skills: app.interest,
                 })
-                console.log("dattta",businessApplications);
             }
         })
-
-        console.log("Generated applications:", businessApplications)
         setApplications(businessApplications)
     }
 
@@ -245,7 +248,7 @@ const JobApplied = () => {
                     </Typography>
 
                     <Grid container spacing={2}>
-                        <Grid item xs={12} sm={4}>
+                        <Grid size={{ xs: 12, sm: 4 }}>
                             <Paper sx={{ bgcolor: "rgba(255,255,255,0.2)", p: 2, textAlign: "center" }}>
                                 <Typography variant="h4" sx={{ fontWeight: "bold" }}>
                                     {pendingCount}
@@ -255,7 +258,7 @@ const JobApplied = () => {
                                 </Typography>
                             </Paper>
                         </Grid>
-                        <Grid item xs={12} sm={4}>
+                        <Grid size={{ xs: 12, sm: 4 }}>
                             <Paper sx={{ bgcolor: "rgba(255,255,255,0.2)", p: 2, textAlign: "center" }}>
                                 <Typography variant="h4" sx={{ fontWeight: "bold" }}>
                                     {acceptedCount}
@@ -265,7 +268,7 @@ const JobApplied = () => {
                                 </Typography>
                             </Paper>
                         </Grid>
-                        <Grid item xs={12} sm={4}>
+                        <Grid size={{ xs: 12, sm: 4 }}>
                             <Paper sx={{ bgcolor: "rgba(255,255,255,0.2)", p: 2, textAlign: "center" }}>
                                 <Typography variant="h4" sx={{ fontWeight: "bold" }}>
                                     {rejectedCount}
@@ -281,7 +284,7 @@ const JobApplied = () => {
                 {/* Search and Filter */}
                 <Box sx={{ mb: 4 }}>
                     <Grid container spacing={2}>
-                        <Grid item xs={12} md={8}>
+                        <Grid size={{ xs: 12, md: 8 }}>
                             <TextField
                                 fullWidth
                                 placeholder="Search by applicant name, email, or business..."
@@ -297,7 +300,7 @@ const JobApplied = () => {
                                 sx={{ bgcolor: "white", borderRadius: 1 }}
                             />
                         </Grid>
-                        <Grid item xs={12} md={4}>
+                        <Grid size={{ xs: 12, md: 4 }}>
                             <FormControl fullWidth sx={{ bgcolor: "white", borderRadius: 1 }}>
                                 <InputLabel>Filter by Status</InputLabel>
                                 <Select value={statusFilter} label="Filter by Status" onChange={(e) => setStatusFilter(e.target.value)}>
@@ -315,7 +318,7 @@ const JobApplied = () => {
                 {filteredApplications.length > 0 ? (
                     <Grid container spacing={3}>
                         {filteredApplications.map((application) => (
-                            <Grid item xs={12} key={application.id}>
+                            <Grid size={{ xs: 12 }} key={application.id}>
                                 <Card
                                     sx={{
                                         transition: "all 0.3s ease",
@@ -361,7 +364,7 @@ const JobApplied = () => {
                                                         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                                                             <BriefcaseIcon sx={{ fontSize: 16, color: "#666" }} />
                                                             <Typography variant="body2" color="text.secondary">
-                                                                Applied to: {application.businessName}
+                                                                Applied to: {application.applicantName}
                                                             </Typography>
                                                         </Box>
                                                         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -388,9 +391,9 @@ const JobApplied = () => {
 
                                                     <Paper sx={{ bgcolor: "#f8f9fa", p: 2, borderRadius: 1 }}>
                                                         <Typography variant="body2" color="text.secondary">
-                                                            {application.coverLetter.length > 150
-                                                                ? `${application.coverLetter.substring(0, 150)}...`
-                                                                : application.coverLetter}
+                                                            {application.about.length > 150
+                                                                ? `${application.about.substring(0, 150)}...`
+                                                                : application.about}
                                                         </Typography>
                                                     </Paper>
                                                 </Box>
@@ -474,37 +477,70 @@ const JobApplied = () => {
                                     Application Details
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                                    Applied to: {selectedApplication.businessName}
+                                    <span style={{ fontWeight: 'bold' }}>Applied to:</span> {selectedApplication.applicantName}
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                                    Applied on: {new Date(selectedApplication.appliedDate).toLocaleDateString()}
+                                    <span style={{ fontWeight: 'bold' }}>Applied on:</span> {new Date(selectedApplication.appliedDate).toLocaleDateString()}
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary">
-                                    Experience: {selectedApplication.experience}
+                                    <span style={{ fontWeight: 'bold' }}>Experience:</span> {selectedApplication.experience}
                                 </Typography>
                             </Box>
 
+                            <Typography variant="subtitle1" sx={{ fontWeight: "bold", mb: 1 }}>
+                                Applicant details
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                                <span style={{ fontWeight: 'bold' }}> FullName:</span> {selectedApplication.userName}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                                <span style={{ fontWeight: 'bold' }}>  userEmail:</span> {selectedApplication.userEmail}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                                <span style={{ fontWeight: 'bold' }}> Phone:</span> {selectedApplication.phone}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                                <span style={{ fontWeight: 'bold' }}> Gender: </span>{selectedApplication.gender}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                                <span style={{ fontWeight: 'bold' }}> Age:</span> {selectedApplication.age}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                                <span style={{ fontWeight: 'bold' }}> workPreference:</span> {selectedApplication.workPreference}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                                <span style={{ fontWeight: 'bold' }}> College/University :</span> {selectedApplication.education}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                                <span style={{ fontWeight: 'bold' }}> Availability:</span> {selectedApplication.availability}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                                <span style={{ fontWeight: 'bold' }}> Location:</span> {selectedApplication.location}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                                <span style={{ fontWeight: 'bold' }}> Expected Salary:</span> {selectedApplication.expectedSalary}
+                            </Typography>
+
                             {selectedApplication.skills && (
-                                <Box sx={{ mb: 3 }}>
-                                    <Typography variant="subtitle1" sx={{ fontWeight: "bold", mb: 1 }}>
-                                        Skills
-                                    </Typography>
-                                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-                                        {selectedApplication.skills.map((skill, index) => (
-                                            <Chip key={index} label={skill} variant="outlined" />
+                                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, mb: 2 }}>
+                                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                                        <span style={{ fontWeight: 'bold' }}> Skills: </span> {selectedApplication.skills.map((skill, index) => (
+                                            <Chip key={index} label={skill} size="small" variant="outlined" />
                                         ))}
-                                    </Box>
+                                    </Typography>
                                 </Box>
                             )}
 
-                            <Box>
-                                <Typography variant="subtitle1" sx={{ fontWeight: "bold", mb: 1 }}>
-                                    Cover Letter
+                            <Typography variant="body2" color="text.secondary" fontWeight={'bold'} sx={{ mb: 1 }}>
+                                About
+                            </Typography>
+                            <Paper sx={{ bgcolor: "#f8f9fa", p: 2, borderRadius: 1 }}>
+                                <Typography variant="body2" color="text.secondary">
+                                    {selectedApplication.about.length > 150
+                                        ? `${selectedApplication.about.substring(0, 150)}...`
+                                        : selectedApplication.about}
                                 </Typography>
-                                <Paper sx={{ bgcolor: "#f8f9fa", p: 2 }}>
-                                    <Typography variant="body2">{selectedApplication.coverLetter}</Typography>
-                                </Paper>
-                            </Box>
+                            </Paper>
                         </DialogContent>
                         <DialogActions>
                             {selectedApplication.status === "pending" && (

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import {
   Box,
@@ -30,36 +30,37 @@ import {
   ChevronRight as ChevronRightIcon,
 } from "@mui/icons-material"
 import JobDetailsDialog from "./JobDetailsDialog"
+import { UserContext } from "../context/UserContext"
 
 const UserDashboard = () => {
   const navigate = useNavigate()
   const [businesses, setBusinesses] = useState([])
   const [searchTerm, setSearchTerm] = useState("")
-  const [signUpData, setSignUpData] = useState(null)
+  const [signUpData, setSignUpData] = useState("")
   const [appliedBusinesses, setAppliedBusinesses] = useState([])
-  const [anchorEl, setAnchorEl] = useState(null)
+  const [, setAnchorEl] = useState(null)
   const [selectedCardIndex, setSelectedCardIndex] = useState([])
   const [open, setOpen] = useState(false)
   const [selectedBusiness, setSelectedBusiness] = useState(null)
-  
+
+  const { userData } = useContext(UserContext);
+
   useEffect(() => {
-    // Check user authentication
     const userData = JSON.parse(localStorage.getItem("signUpData") || "{}")
+
     if (!userData || userData.userType !== "user") {
       navigate("/signup")
       return
     }
-
     setSignUpData(userData)
 
-    // Load business data from localStorage
     const businessData = JSON.parse(localStorage.getItem("businessData") || "[]")
     setBusinesses(businessData)
 
-    // Load applied businesses from localStorage
     const appliedData = JSON.parse(localStorage.getItem("appliedBusinesses") || "[]")
     setAppliedBusinesses(appliedData)
-  }, [navigate,selectedCardIndex])
+
+  }, [navigate])
 
   const handleApply = (businessToApply, index) => {
     if (!signUpData || !signUpData.email) {
@@ -93,20 +94,27 @@ const UserDashboard = () => {
 
     // Create new application entry for ONLY this specific business
     const newApplication = {
-      idx: index, 
+      idx: index,
       businessId: businessId,
       userEmail: signUpData.email,
       appliedDate: new Date().toISOString(),
-      businessName: businessToApply.jobTitle,
       jobTitle: businessToApply.jobTitle,
+      about: userData.about,
+      age: userData.age,
+      availability: userData.availability,
+      education: userData.education,
+      expectedSalary: userData.expectedSalary,
+      experience: userData.experience,
+      userName: `${userData.firstName} ${userData.lastName}`,
+      gender: userData.gender,
+      interest: userData.interest,
+      location: userData.location,
+      phone: userData.phone,
+      preferredIndustry: userData.preferredIndustry,
+      workPreference: userData.workPreference,
     }
-
-    console.log("New application:", newApplication)
-
     // Add ONLY this new application to the existing list
     const updatedApplications = [...currentApplications, newApplication]
-
-    console.log("Updated applications:", updatedApplications)
 
     // Save to localStorage
     localStorage.setItem("appliedBusinesses", JSON.stringify(updatedApplications))
@@ -169,8 +177,6 @@ const UserDashboard = () => {
     return appliedBusinesses.some((entry) => entry.businessId === businessId && entry.userEmail === signUpData.email)
   }
 
-  if (!signUpData) return null
-
   return (
     <Box
       sx={{ minHeight: "100vh", paddingTop: "10px", background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)" }}
@@ -180,7 +186,7 @@ const UserDashboard = () => {
         onClick={handleMenuOpen}
         sx={{ display: "flex", alignItems: "center", gap: 1, textTransform: "none", marginLeft: "30px" }}
       >
-        <Avatar sx={{ width: 32, height: 32, bgcolor: "#1976d2" }}>{signUpData.email?.charAt(0).toUpperCase()}</Avatar>
+        <Avatar sx={{ width: 32, height: 32, bgcolor: "#1976d2" }}> {signUpData?.email ? signUpData.email[0].toUpperCase() : "U"}</Avatar>
         <Typography sx={{ display: { xs: "none", md: "block" } }}>{signUpData.email}</Typography>
       </Button>
 
@@ -399,7 +405,7 @@ const UserDashboard = () => {
                           handleApply(business, index)
                         }}
 
-                        disabled={appliedBusinesses.some(app => app.idx === index) || isOwnBusiness}
+                        disabled={appliedBusinesses.some(app => app.idx === index && app.userEmail === signUpData.email) || isOwnBusiness}
                         endIcon={!isApplied && !isOwnBusiness ? <ChevronRightIcon /> : null}
                         sx={{
                           textTransform: "none",
