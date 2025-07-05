@@ -28,6 +28,7 @@ import {
   FilterList as FilterIcon,
   Person as UserIcon,
   ChevronRight as ChevronRightIcon,
+  Message as MessageIcon,
 } from "@mui/icons-material"
 import JobDetailsDialog from "./JobDetailsDialog"
 import { UserContext } from "../context/UserContext"
@@ -42,7 +43,7 @@ const UserDashboard = () => {
   const [selectedCardIndex, setSelectedCardIndex] = useState([])
   const [open, setOpen] = useState(false)
   const [selectedBusiness, setSelectedBusiness] = useState(null)
-
+  const [acceptedApplications, setAcceptedApplications] = useState({});
   const { userData } = useContext(UserContext);
 
   useEffect(() => {
@@ -124,9 +125,9 @@ const UserDashboard = () => {
     setBusinesses((prev) => [...prev]);
 
     // mark this button as disabled
-    setSelectedCardIndex((prev) => [...prev, index]);
+    setSelectedCardIndex((selectedCardIndex) => [...selectedCardIndex, index]);
 
-    alert(`Application submitted successfully to ${businessToApply.jobTitle}!`)
+    window.confirm(`Application submitted successfully to ${businessToApply.jobTitle}!`)
   }
 
   const handleMenuOpen = (event) => {
@@ -177,6 +178,24 @@ const UserDashboard = () => {
     return appliedBusinesses.some((entry) => entry.businessId === businessId && entry.userEmail === signUpData.email)
   }
 
+  useEffect(() => {
+    const appliedStatus = JSON.parse(localStorage.getItem("applicationStatuses") || "{}");
+    // const acceptedSet = new Set();
+    // appliedBusinesses.forEach((b) => {
+    //   const ApKey = `${b.businessId}_${signUpData.email}`;acceptedSet.add(ApKey);
+    //   const status = appliedStatus[ApKey]; // direct lookup
+    //   console.log(status);
+    //   if (status === "accepted") {
+    //     acceptedSet.add(ApKey);
+    //   } 
+    //   if(status === "rejected") {
+
+    //   }
+    // });
+    console.log(appliedStatus);
+    setAcceptedApplications(appliedStatus);
+  }, [appliedBusinesses, signUpData])
+
   return (
     <Box
       sx={{ minHeight: "100vh", paddingTop: "10px", background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)" }}
@@ -210,7 +229,7 @@ const UserDashboard = () => {
           </Typography>
 
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={4}>
+            <Grid size={{ xs: 12, sm: 4 }}>
               <Paper sx={{ bgcolor: "rgba(255,255,255,0.2)", p: 2, textAlign: "center" }}>
                 <Typography variant="h4" sx={{ fontWeight: "bold" }}>
                   {businesses.length}
@@ -220,7 +239,7 @@ const UserDashboard = () => {
                 </Typography>
               </Paper>
             </Grid>
-            <Grid item xs={12} sm={4}>
+            <Grid size={{ xs: 12, sm: 4 }}>
               <Paper sx={{ bgcolor: "rgba(255,255,255,0.2)", p: 2, textAlign: "center" }}>
                 <Typography variant="h4" sx={{ fontWeight: "bold" }}>
                   {appliedBusinesses.filter((app) => app.userEmail === signUpData.email).length}
@@ -230,10 +249,10 @@ const UserDashboard = () => {
                 </Typography>
               </Paper>
             </Grid>
-            <Grid item xs={12} sm={4}>
+            <Grid size={{ xs: 12, sm: 4 }}>
               <Paper sx={{ bgcolor: "rgba(255,255,255,0.2)", p: 2, textAlign: "center" }}>
                 <Typography variant="h4" sx={{ fontWeight: "bold" }}>
-                  {Math.floor(appliedBusinesses.filter((app) => app.userEmail === signUpData.email).length * 0.3)}
+                  {(appliedBusinesses.filter((app) => app.userEmail !== signUpData.email).length)}
                 </Typography>
                 <Typography variant="body2" sx={{ opacity: 0.9 }}>
                   Responses Received
@@ -246,7 +265,7 @@ const UserDashboard = () => {
         {/* Search and Filter */}
         <Box sx={{ mb: 4 }}>
           <Grid container spacing={2}>
-            <Grid item xs={12} md={10}>
+            <Grid size={{ xs: 12, md: 10 }}>
               <TextField
                 fullWidth
                 placeholder="Search by company name, owner, or description..."
@@ -262,7 +281,7 @@ const UserDashboard = () => {
                 sx={{ bgcolor: "white", borderRadius: 1 }}
               />
             </Grid>
-            <Grid item xs={12} md={2}>
+            <Grid size={{ xs: 12, md: 2 }}>
               <Button variant="outlined" fullWidth startIcon={<FilterIcon />} sx={{ height: "56px", bgcolor: "white" }}>
                 Filters
               </Button>
@@ -272,33 +291,45 @@ const UserDashboard = () => {
 
         {/* Business Opportunities Grid */}
         {filteredBusinesses.length > 0 ? (
-          <Grid container spacing={2}>
+          <Grid container spacing={3} sx={{ p: 2 }}>
             {filteredBusinesses.map((business, index) => {
               // Check if THIS specific business is applied by current user
               const isApplied = isBusinessApplied(business)
               const isOwnBusiness = business.email === signUpData.email
               const rating = getRandomRating()
+              const ApKey = `${business.jobTitle}_${business.ownerName}_${signUpData.email}`
+              const appStatus = acceptedApplications[ApKey];
 
               return (
-                <Grid container size={{ xs: 12, sm: 6, lg: 4 }} key={index}>
+                <Grid item xs={12} sm={6} lg={4} key={index}>
                   <Card
                     onClick={() => setSelectedCardIndex(index)}
                     sx={{
                       height: "100%",
-                      width: "300px",
-                      display: "flex",
+                      maxWidth: 400,
                       margin: "0 auto",
+                      display: "flex",
                       flexDirection: "column",
                       transition: "all 0.3s ease",
+                      cursor: "pointer",
+                      borderRadius: 2,
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
                       "&:hover": {
                         transform: "translateY(-4px)",
-                        boxShadow: 6,
+                        boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
                       },
                     }}
                   >
-                    <CardContent sx={{ flexGrow: 1 }}>
+                    <CardContent sx={{ flexGrow: 1, p: 3 }}>
                       {/* Header */}
-                      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 2 }}>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "flex-start",
+                          mb: 2,
+                        }}
+                      >
                         <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
                           <Avatar
                             sx={{
@@ -306,15 +337,24 @@ const UserDashboard = () => {
                               height: 48,
                               background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
                               fontWeight: "bold",
+                              fontSize: "1.1rem",
                             }}
                           >
                             {getInitials(business.jobTitle || "Business")}
                           </Avatar>
                           <Box>
-                            <Typography variant="h6" sx={{ fontWeight: "bold", color: "#1a1a1a" }}>
+                            <Typography
+                              variant="h6"
+                              sx={{
+                                fontWeight: "bold",
+                                color: "#1a1a1a",
+                                fontSize: "1.1rem",
+                                lineHeight: 1.2,
+                              }}
+                            >
                               {business.jobTitle || "Unnamed Business"}
                             </Typography>
-                            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mt: 0.5 }}>
                               <UserIcon sx={{ fontSize: 14, color: "#666" }} />
                               <Typography variant="body2" color="text.secondary">
                                 {business.ownerName || "Business Owner"}
@@ -327,6 +367,11 @@ const UserDashboard = () => {
                           label={rating}
                           size="small"
                           variant="outlined"
+                          sx={{
+                            borderColor: "#ffc107",
+                            color: "#ffc107",
+                            fontWeight: "bold",
+                          }}
                         />
                       </Box>
 
@@ -340,6 +385,7 @@ const UserDashboard = () => {
                           WebkitLineClamp: 3,
                           WebkitBoxOrient: "vertical",
                           overflow: "hidden",
+                          lineHeight: 1.5,
                         }}
                       >
                         {business.description ||
@@ -347,27 +393,27 @@ const UserDashboard = () => {
                       </Typography>
 
                       {/* Details */}
-                      <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                      <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
                         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                          <BusinessIcon sx={{ fontSize: 16, color: "#666" }} />
+                          <BusinessIcon sx={{ fontSize: 18, color: "#666" }} />
                           <Typography variant="body2" color="text.secondary">
                             {business.jobCategory || "Various Industries"}
                           </Typography>
                         </Box>
                         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                          <LocationIcon sx={{ fontSize: 16, color: "#666" }} />
+                          <LocationIcon sx={{ fontSize: 18, color: "#666" }} />
                           <Typography variant="body2" color="text.secondary">
                             {business.location || "Location Flexible"}
                           </Typography>
                         </Box>
                         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                          <ClockIcon sx={{ fontSize: 16, color: "#666" }} />
+                          <ClockIcon sx={{ fontSize: 18, color: "#666" }} />
                           <Typography variant="body2" color="text.secondary">
                             {business.duration || "3-6 months"}
                           </Typography>
                         </Box>
                         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                          <UsersIcon sx={{ fontSize: 16, color: "#666" }} />
+                          <UsersIcon sx={{ fontSize: 18, color: "#666" }} />
                           <Typography variant="body2" color="text.secondary">
                             {business.openings || Math.floor(Math.random() * 8) + 2} positions available
                           </Typography>
@@ -376,18 +422,77 @@ const UserDashboard = () => {
 
                       {/* Status Chips */}
                       <Box sx={{ mt: 2, display: "flex", gap: 1, flexWrap: "wrap" }}>
-                        {isApplied && (
+                        {appStatus === "rejected" && (
+                        <Box
+                            sx={{
+                              display: "flex",
+                              flexDirection: "column",
+                              gap: 1,
+                              width: "100%",
+                            }}
+                          >
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                color: "#e66060",
+                                fontWeight: "bold",
+                                textAlign: "center",
+                                bgcolor: "#f5e0e0",
+                                py: 1,
+                                px: 2,
+                                borderRadius: 1,
+                              }}
+                            >
+                               Your Application was Rejected!
+                            </Typography>
+                          </Box>
+                        )}
+                        
+                        {appStatus === "accepted" && (
+                          <Box
+                            sx={{
+                              display: "flex",
+                              flexDirection: "column",
+                              gap: 1,
+                              width: "100%",
+                            }}
+                          >
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                color: "#2e7d32",
+                                fontWeight: "bold",
+                                textAlign: "center",
+                                bgcolor: "#e8f5e8",
+                                py: 1,
+                                px: 2,
+                                borderRadius: 1,
+                              }}
+                            >
+                              🎉 Your Application was Accepted!
+                            </Typography>
+                          </Box>
+                        )}
+                        {appStatus !== "rejected" || appStatus === "accepted" && (
                           <Chip
                             label="✓ Applied"
                             size="small"
-                            sx={{ bgcolor: "#e8f5e8", color: "#2e7d32", fontWeight: "bold" }}
+                            sx={{
+                              bgcolor: "#e8f5e8",
+                              color: "#2e7d32",
+                              fontWeight: "bold",
+                            }}
                           />
                         )}
                         {isOwnBusiness && (
                           <Chip
                             label="Your Business"
                             size="small"
-                            sx={{ bgcolor: "#e3f2fd", color: "#1976d2", fontWeight: "bold" }}
+                            sx={{
+                              bgcolor: "#e3f2fd",
+                              color: "#1976d2",
+                              fontWeight: "bold",
+                            }}
                           />
                         )}
                       </Box>
@@ -395,44 +500,82 @@ const UserDashboard = () => {
 
                     <Divider />
 
-                    <CardActions sx={{ p: 2 }}>
-                      <Button
-                        fullWidth
-                        variant="contained"
-                        color={isApplied ? "inherit" : "success"}
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handleApply(business, index)
-                        }}
+                    <CardActions sx={{ p: 2, gap: 1 }}>
 
-                        disabled={appliedBusinesses.some(app => app.idx === index && app.userEmail === signUpData.email) || isOwnBusiness}
-                        endIcon={!isApplied && !isOwnBusiness ? <ChevronRightIcon /> : null}
-                        sx={{
-                          textTransform: "none",
-                          fontWeight: "bold",
-                          "&:disabled": {
-                            opacity: 0.6,
-                            backgroundColor: isApplied ? "#e8f5e8" : "#f5f5f5",
-                            color: isApplied ? "#2e7d32" : "#666",
-                          },
-                        }}
-                      >
-                        {isApplied ? "Applied ✓" : isOwnBusiness ? "Your Business" : "Apply Now"}
-                      </Button>
+                      {appStatus === "accepted" ? (
+                        // Show Message Button when application is accepted
+                        <Button
+                          fullWidth
+                          variant="contained"
+                          color="primary"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            navigate(`/chat?to=${business.ownerName}`)
+                          }}
+                          startIcon={<MessageIcon />}
+                          sx={{
+                            textTransform: "none",
+                            fontWeight: "bold",
+                            bgcolor: "#1976d2",
+                            "&:hover": { bgcolor: "#115293" },
+                          }}
+                        >
+                          Send Message
+                        </Button>
+                      ) : (
+                        // Show Apply Button when not accepted yet
+                        <Button
+                          fullWidth
+                          variant="contained"
+                          color={appStatus === "accepted" ? "success" :
+                            appStatus === "rejected" ? "error" :
+                              isApplied ? "inherit" :
+                                "success"}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleApply(business, index)
+                          }}
+                          disabled={
+                            appliedBusinesses.some((app) => app.idx === index && app.userEmail === signUpData.email) ||
+                            isOwnBusiness
+                          }
+                          endIcon={!isApplied && !isOwnBusiness ? <ChevronRightIcon /> : null}
+                          sx={{
+                            textTransform: "none",
+                            fontWeight: "bold",
+                            "&:disabled": {
+                              opacity: 0.6,
+                              backgroundColor: appStatus === "rejected" ? "#f5e0e0" : "#f5f5f5",
+                              color: appStatus === "rejected" ? "#d32f2f" : "#666",
+                            },
+                          }}
+                        >
+                          {appStatus === "accepted"
+                            ? "Applied ✓"
+                            : appStatus === "rejected"
+                              ? "Rejected"
+                              : isOwnBusiness
+                                ? "Your Business"
+                                : "Apply Now"}
+                        </Button>
+                      )}
 
                       <Button
-                        variant="contained"
+                        variant="outlined"
                         onClick={(e) => {
                           e.stopPropagation()
                           handleJobDetailsClick(business)
                         }}
                         sx={{
                           textTransform: "none",
-                          width: "252px",
                           fontWeight: "bold",
-                          ml: 1,
-                          bgcolor: "#1976d2",
-                          "&:hover": { bgcolor: "#115293" },
+                          borderColor: "#1976d2",
+                          color: "#1976d2",
+                          "&:hover": {
+                            borderColor: "#115293",
+                            color: "#115293",
+                            bgcolor: "rgba(25, 118, 210, 0.04)",
+                          },
                         }}
                       >
                         Job Details

@@ -81,8 +81,6 @@ const JobApplied = () => {
             myBusinessIds.includes(app.businessId)
         )
 
-        console.log(applicationsForMyBusinesses);
-
         // Get existing application statuses from localStorage
         const applicationStatuses = JSON.parse(localStorage.getItem("applicationStatuses") || "{}")
 
@@ -134,13 +132,16 @@ const JobApplied = () => {
         setApplications(businessApplications)
     }
 
+    console.log(applications);
     const handleStatusChange = (applicationId, newStatus) => {
+        console.log(applicationId);
         // Update applications state
         setApplications((prev) => prev.map((app) => (app.id === applicationId ? { ...app, status: newStatus } : app)))
 
         // Save status change to localStorage
         const applicationStatuses = JSON.parse(localStorage.getItem("applicationStatuses") || "{}")
         applicationStatuses[applicationId] = newStatus
+
         localStorage.setItem("applicationStatuses", JSON.stringify(applicationStatuses))
 
         // Show confirmation message

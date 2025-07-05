@@ -41,13 +41,9 @@ export default function Home() {
   }
 
   const signupData = JSON.parse(localStorage.getItem("signupData")) || {};
+  console.log(signupData.length);
   const navigateUserDashboard = () => {
-    if (signupData.length >= 0) {
-      navigate("/userDashboard");
-    }
-    else {
-      navigate("/signup");
-    }
+    navigate("/userDashboard");
   }
 
   const isBusinessRegistered = localStorage.getItem("BusinessRegister") === "true";
@@ -62,6 +58,10 @@ export default function Home() {
             <Box sx={{ mb: 4 }}>
               <Chip
                 label="🚀 Connecting Talent with Opportunity"
+                clickable
+                onClick={() => {
+                  console.log("Chip clicked!");
+                }}
                 sx={{
                   bgcolor: "primary.50",
                   color: "primary.800",
