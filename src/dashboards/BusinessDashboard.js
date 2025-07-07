@@ -5,6 +5,7 @@ import RegisterBusiness from "./pages/RegisterBusiness";
 import Sidebar from "./pages/Sidebar";
 import Box from "@mui/material/Box";
 import JobApplied from "./pages/JobApplied";
+import BusinessChat from "./pages/BusinessChat";
 
 export default function BusinessDashboard() {
     return (
@@ -17,6 +18,7 @@ export default function BusinessDashboard() {
                     <Route path="business-list" element={<BusinessList />} />
                     <Route path="register" element={<RegisterBusiness />} />
                     <Route path="jobapplied" element={<JobApplied/>} />
+                    <Route path="businessChat" element={<BusinessChat/>}/>
                 </Routes>
             </Box>  
         </Box>

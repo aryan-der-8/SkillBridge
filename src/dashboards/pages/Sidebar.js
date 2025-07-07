@@ -13,7 +13,7 @@ import {
 
 
 export default function Sidebar() {
-    
+
     const ownerEmail = JSON.parse(localStorage.getItem("signUpData"));
 
     const location = useLocation();
@@ -21,9 +21,10 @@ export default function Sidebar() {
 
     const menuItems = [
         { text: 'Dashboard', path: '/businessDashboard/dashboard' },
-        { text: 'Job Applied', path: '/businessDashboard/jobapplied' },
-        { text: 'Register Business', path: '/businessDashboard/register' },
         { text: 'Business List', path: '/businessDashboard/business-list' },
+        { text: 'Register Business', path: '/businessDashboard/register' },
+        { text: 'Job Applied', path: '/businessDashboard/jobapplied' },
+        { text: 'Business Chat', path: '/businessDashboard/businessChat' },
     ];
 
     const drawerWidth = 240;
@@ -40,7 +41,7 @@ export default function Sidebar() {
                 },
             }}
         >
-            <Toolbar sx={{ display: 'flex', flexDirection: 'column', alignItems:"center", marginRight: '10px' }}>
+            <Toolbar sx={{ display: 'flex', flexDirection: 'column', alignItems: "center", marginRight: '10px' }}>
                 <Typography variant="h6" fontWeight={'bold'} marginTop={'10px'} noWrap>
                     Business Dashboard
                 </Typography>

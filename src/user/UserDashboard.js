@@ -32,6 +32,8 @@ import {
 } from "@mui/icons-material"
 import JobDetailsDialog from "./JobDetailsDialog"
 import { UserContext } from "../context/UserContext"
+import ChatIcon from "@mui/icons-material/Chat";
+
 
 const UserDashboard = () => {
   const navigate = useNavigate()
@@ -45,7 +47,6 @@ const UserDashboard = () => {
   const [selectedBusiness, setSelectedBusiness] = useState(null)
   const [acceptedApplications, setAcceptedApplications] = useState({});
   const { userData } = useContext(UserContext);
-
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("signUpData") || "{}")
 
@@ -62,6 +63,10 @@ const UserDashboard = () => {
     setAppliedBusinesses(appliedData)
 
   }, [navigate])
+
+    const goChat = () => {
+      navigate('/chat')
+  }
 
   const handleApply = (businessToApply, index) => {
     if (!signUpData || !signUpData.email) {
@@ -180,18 +185,6 @@ const UserDashboard = () => {
 
   useEffect(() => {
     const appliedStatus = JSON.parse(localStorage.getItem("applicationStatuses") || "{}");
-    // const acceptedSet = new Set();
-    // appliedBusinesses.forEach((b) => {
-    //   const ApKey = `${b.businessId}_${signUpData.email}`;acceptedSet.add(ApKey);
-    //   const status = appliedStatus[ApKey]; // direct lookup
-    //   console.log(status);
-    //   if (status === "accepted") {
-    //     acceptedSet.add(ApKey);
-    //   } 
-    //   if(status === "rejected") {
-
-    //   }
-    // });
     console.log(appliedStatus);
     setAcceptedApplications(appliedStatus);
   }, [appliedBusinesses, signUpData])
@@ -201,13 +194,22 @@ const UserDashboard = () => {
       sx={{ minHeight: "100vh", paddingTop: "10px", background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)" }}
     >
       {/* Header */}
-      <Button
-        onClick={handleMenuOpen}
-        sx={{ display: "flex", alignItems: "center", gap: 1, textTransform: "none", marginLeft: "30px" }}
-      >
-        <Avatar sx={{ width: 32, height: 32, bgcolor: "#1976d2" }}> {signUpData?.email ? signUpData.email[0].toUpperCase() : "U"}</Avatar>
-        <Typography sx={{ display: { xs: "none", md: "block" } }}>{signUpData.email}</Typography>
-      </Button>
+      <Box sx={{display:'flex', gap:3}}>
+        <Button variant="outlined" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginLeft: "30px", gap: 10 }}>
+          <Box onClick={handleMenuOpen}
+            sx={{ display: "flex", alignItems: "center", gap: 1, textTransform: "none" }}>
+            <Avatar sx={{ width: 32, height: 32, bgcolor: "#1976d2" }}> {signUpData?.email ? signUpData.email[0].toUpperCase() : "U"}</Avatar>
+            <Typography sx={{ display: { xs: "none", md: "block" } }}>{signUpData.email}</Typography>
+          </Box>
+        </Button>
+
+        <Button variant="outlined" onClick={goChat} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight:'30px', gap: 10 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: '5px', textTransform: "none"}}>
+              <ChatIcon/>
+            <Typography sx={{ display: { xs: "none", md: "block" } }}>Chat</Typography>
+          </Box>
+        </Button>
+      </Box>
 
       {/* Main Content */}
       <Container maxWidth="xl" sx={{ py: 4 }}>
@@ -252,7 +254,7 @@ const UserDashboard = () => {
             <Grid size={{ xs: 12, sm: 4 }}>
               <Paper sx={{ bgcolor: "rgba(255,255,255,0.2)", p: 2, textAlign: "center" }}>
                 <Typography variant="h4" sx={{ fontWeight: "bold" }}>
-                  {(appliedBusinesses.filter((app) => app.userEmail !== signUpData.email).length)}
+                  {Object.keys(acceptedApplications).length}
                 </Typography>
                 <Typography variant="body2" sx={{ opacity: 0.9 }}>
                   Responses Received
@@ -301,7 +303,7 @@ const UserDashboard = () => {
               const appStatus = acceptedApplications[ApKey];
 
               return (
-                <Grid item xs={12} sm={6} lg={4} key={index}>
+                <Grid size={{ xs: 12, sm: 6, lg: 4 }} key={index}>
                   <Card
                     onClick={() => setSelectedCardIndex(index)}
                     sx={{
@@ -422,32 +424,6 @@ const UserDashboard = () => {
 
                       {/* Status Chips */}
                       <Box sx={{ mt: 2, display: "flex", gap: 1, flexWrap: "wrap" }}>
-                        {appStatus === "rejected" && (
-                        <Box
-                            sx={{
-                              display: "flex",
-                              flexDirection: "column",
-                              gap: 1,
-                              width: "100%",
-                            }}
-                          >
-                            <Typography
-                              variant="body2"
-                              sx={{
-                                color: "#e66060",
-                                fontWeight: "bold",
-                                textAlign: "center",
-                                bgcolor: "#f5e0e0",
-                                py: 1,
-                                px: 2,
-                                borderRadius: 1,
-                              }}
-                            >
-                               Your Application was Rejected!
-                            </Typography>
-                          </Box>
-                        )}
-                        
                         {appStatus === "accepted" && (
                           <Box
                             sx={{
@@ -473,16 +449,18 @@ const UserDashboard = () => {
                             </Typography>
                           </Box>
                         )}
-                        {appStatus !== "rejected" || appStatus === "accepted" && (
-                          <Chip
-                            label="✓ Applied"
-                            size="small"
-                            sx={{
-                              bgcolor: "#e8f5e8",
-                              color: "#2e7d32",
-                              fontWeight: "bold",
-                            }}
-                          />
+                        {isApplied && (
+                          appStatus === "accepted" || appStatus === "rejected" ? ''
+                            :
+                            <Chip
+                              label="✓ Applied"
+                              size="small"
+                              sx={{
+                                bgcolor: "#e8f5e8",
+                                color: "#2e7d32",
+                                fontWeight: "bold",
+                              }}
+                            />
                         )}
                         {isOwnBusiness && (
                           <Chip
@@ -510,7 +488,7 @@ const UserDashboard = () => {
                           color="primary"
                           onClick={(e) => {
                             e.stopPropagation()
-                            navigate(`/chat?to=${business.ownerName}`)
+                            goChat()
                           }}
                           startIcon={<MessageIcon />}
                           sx={{

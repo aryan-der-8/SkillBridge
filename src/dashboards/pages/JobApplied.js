@@ -37,6 +37,7 @@ import {
     Visibility as VisibilityIcon,
     Assignment as AssignmentIcon,
 } from "@mui/icons-material"
+import ApplicationDialog from "./ApplicationDialog"
 
 const JobApplied = () => {
     const navigate = useNavigate()
@@ -454,7 +455,8 @@ const JobApplied = () => {
             </Container>
 
             {/* Application Details Dialog */}
-            <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="md" fullWidth>
+            <ApplicationDialog dialogOpen={dialogOpen} setDialogOpen={setDialogOpen} selectedApplication={selectedApplication} handleStatusChange={handleStatusChange} getInitials={getInitials} getStatusColor={getStatusColor} />
+            {/* <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="md" fullWidth>
                 {selectedApplication && (
                     <>
                         <DialogTitle>
@@ -572,7 +574,7 @@ const JobApplied = () => {
                         </DialogActions>
                     </>
                 )}
-            </Dialog>
+            </Dialog> */}
         </Box>
     )
 }
