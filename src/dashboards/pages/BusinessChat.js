@@ -107,7 +107,7 @@ const BusinessChat = () => {
 
     event.preventDefault()
     setSelectedMessageIndex(index)
-    setAnchorEl(event.currentTarget)
+    setAnchorEl(event.currentTarget)  
   }
 
   const handleDoubleClick = (index) => {

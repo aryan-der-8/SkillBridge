@@ -196,7 +196,7 @@ const UserDashboard = () => {
       {/* Header */}
       <Box sx={{display:'flex', gap:3}}>
         <Button variant="outlined" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginLeft: "30px", gap: 10 }}>
-          <Box onClick={handleMenuOpen}
+          <Box  onClick={() => navigate("/user/profile")}
             sx={{ display: "flex", alignItems: "center", gap: 1, textTransform: "none" }}>
             <Avatar sx={{ width: 32, height: 32, bgcolor: "#1976d2" }}> {signUpData?.email ? signUpData.email[0].toUpperCase() : "U"}</Avatar>
             <Typography sx={{ display: { xs: "none", md: "block" } }}>{signUpData.email}</Typography>

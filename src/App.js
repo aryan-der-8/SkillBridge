@@ -10,6 +10,7 @@ import UserInterest from "./user/UserInterest"
 import { ThemeProvider, createTheme } from "@mui/material/styles"
 import { CssBaseline } from "@mui/material"
 import Chat from "./user/Chat"
+import UserProfile from "./user/UserProfile"
 
 // Create custom theme
 const theme = createTheme({
@@ -80,6 +81,7 @@ function App() {
           <Route path="/user" element={<User />} />
           <Route path="/userInterest" element={<UserInterest />} />
           <Route path="/chat" element={<Chat/>} />
+          <Route path="/user/profile" element={<UserProfile />} />
         </Routes>
       </div>
     </ThemeProvider>

@@ -163,9 +163,9 @@ const Chat = () => {
       >
         <Box
           sx={{
-            m:2,
+            m: 2,
             p: 1,
-            bgcolor: "primary.main",
+            bgcolor: "#42a5f5",
             color: "white",
             display: "flex",
             alignItems: "center",
@@ -179,12 +179,15 @@ const Chat = () => {
           <Chip
             label={acceptedBusinesses.length}
             size="small"
+            clickable
+            onClick={() => console.log("Clicked")}
             sx={{
               bgcolor: "rgba(255,255,255,0.2)",
               color: "white",
               ml: "auto",
             }}
           />
+
         </Box>
 
         <List sx={{ flex: 1, overflowY: "auto", p: 0 }}>
@@ -218,7 +221,7 @@ const Chat = () => {
                 }}
               >
                 <ListItemAvatar>
-                  <Avatar sx={{ bgcolor: "primary.main" }}>
+                  <Avatar sx={{ bgcolor: "#9e9e9e", color:'#fafafa' }}>
                     <BusinessIcon />
                   </Avatar>
                 </ListItemAvatar>
@@ -262,14 +265,14 @@ const Chat = () => {
               }}
             >
               <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                <Avatar sx={{ bgcolor: "primary.main" }}>
+                <Avatar sx={{ bgcolor: "#9e9e9e", color:'#fafafa' }}>
                   <BusinessIcon />
                 </Avatar>
-                <Box sx={{display:'flex', alignItems:'center'}}>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <Typography variant="h6" fontWeight="bold">
                     {selectedBusiness.jobTitle}
                   </Typography>
-                  <Button sx={{position:'absolute', right:30, height:'30px'}} onClick={() => navigate(-1)} variant="outlined">Back</Button>
+                  <Button sx={{ position: 'absolute', right: 30, height: '30px' }} onClick={() => navigate(-1)} variant="outlined">Back</Button>
                 </Box>
               </Box>
             </Paper>
@@ -322,8 +325,8 @@ const Chat = () => {
                         <Paper
                           elevation={2}
                           sx={{
-                            bgcolor: msg.sender === "user" ? "primary.main" : "white",
-                            color: msg.sender === "user" ? "white" : "text.primary",
+                            bgcolor: msg.sender === "user" ? "#64b5f6" : "white",
+                            color: msg.sender === "user" ? "black" : "text.primary",
                             px: 2,
                             py: 1.5,
                             borderRadius: msg.sender === "user" ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
@@ -336,7 +339,7 @@ const Chat = () => {
                         >
                           <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1 }}>
                             {msg.sender !== "user" && (
-                              <Avatar sx={{ width: 24, height: 24, bgcolor: "primary.main" }}>
+                              <Avatar sx={{ width: 24, height: 24, bgcolor: "#b39ddb"}}>
                                 <PersonIcon sx={{ fontSize: 16 }} />
                               </Avatar>
                             )}
