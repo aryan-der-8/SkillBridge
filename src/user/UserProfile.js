@@ -54,36 +54,36 @@ import {
   TimelineContent,
   TimelineDot,
 } from '@mui/lab'
+import { useContext, useEffect, useState } from "react"
+import EditProfileDialog from "./EditProfileDialog";
+import { UserContext } from "../context/UserContext"
 
 const UserProfile = () => {
   const theme = useTheme()
-
+  const [editOpen, setEditOpen] = useState(false);
+  const {userData, setUserData} = useContext(UserContext)
   // Mock user data
+
+  const handleEditOpen = () => setEditOpen(true);
+  const handleEditClose = () => setEditOpen(false);
+  const handleProfileSave = (updatedData) => setUserData(updatedData);
+
   const user = {
-    firstName: "Alex",
-    lastName: "Rodriguez",
-    email: "alex.rodriguez@skillbridge.com",
-    phone: "+1 (555) 987-6543",
-    age: 29,
-    gender: "Male",
-    location: "New York, NY",
-    education: "Bachelor's in Software Engineering",
+    firstName: userData.firstName,
+    lastName: userData.lastName,
+    email: userData.email,
+    phone: `+91 ${userData.phone}`,
+    age: userData.age,
+    gender: userData.gender,
+    location: userData.location,
+    education: userData.education,
     about:
-      "Creative full-stack developer passionate about building innovative solutions. Experienced in modern web technologies and cloud architecture. Love mentoring and contributing to open-source projects.",
+      userData.about,
     skills: [
-      "React",
-      "Node.js",
-      "Python",
-      "TypeScript",
-      "AWS",
-      "Docker",
-      "GraphQL",
-      "MongoDB",
-      "Next.js",
-      "PostgreSQL",
+      userData?.interest?.map((item) => item) || "Problem Solving"
     ],
-    experience: "6+ years",
-    jobTitle: "Lead Full Stack Developer",
+    experience: `${userData.experience} years`,
+    jobTitle: `Lead ${userData?.interest[0]}`,
     company: "InnovateTech Solutions",
     profileImage: "/placeholder.svg?height=150&width=150",
     coverImage: "/placeholder.svg?height=300&width=1200",
@@ -170,6 +170,7 @@ const UserProfile = () => {
                 </Tooltip>
                 <Tooltip title="Edit Profile">
                   <IconButton
+                    onClick={handleEditOpen}
                     sx={{
                       bgcolor: alpha("#fff", 0.2),
                       color: "white",
@@ -182,8 +183,15 @@ const UserProfile = () => {
               </Stack>
             </Stack>
 
+            <EditProfileDialog
+              open={editOpen}
+              handleClose={handleEditClose}
+              user={userData}
+              onSave={handleProfileSave}
+            />
+
             <Grid container spacing={4} alignItems="center">
-              <Grid size={{xs:12, md:3}}>
+              <Grid size={{ xs: 12, md: 3 }}>
                 <Box sx={{ textAlign: "center" }}>
                   <Box sx={{ position: "relative", display: "inline-block" }}>
                     <Avatar
@@ -217,7 +225,7 @@ const UserProfile = () => {
                 </Box>
               </Grid>
 
-              <Grid size={{xs:12, md:6}}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Box sx={{ color: "white", textAlign: { xs: "center", md: "left" } }}>
                   <Typography variant="h3" fontWeight="bold" gutterBottom>
                     {user.firstName} {user.lastName}
@@ -239,7 +247,7 @@ const UserProfile = () => {
                 </Box>
               </Grid>
 
-              <Grid size={{xs:12, md:3}}>
+              <Grid size={{ xs: 12, md: 3 }}>
                 <Stack spacing={2} alignItems="center">
                   <Button
                     variant="contained"
@@ -277,13 +285,13 @@ const UserProfile = () => {
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Grid container spacing={4}>
           {/* Left Column */}
-          <Grid size={{xs:12, lg:8}}>
+          <Grid size={{ xs: 12, lg: 8 }}>
             {/* Stats Cards */}
             <Grid container spacing={3} sx={{ mb: 4 }}>
               {stats.map((stat, index) => {
                 const IconComponent = stat.icon
                 return (
-                  <Grid size={{xs:6, md:3}} key={index}>
+                  <Grid size={{ xs: 6, md: 3 }} key={index}>
                     <Card
                       sx={{
                         textAlign: "center",
@@ -326,7 +334,7 @@ const UserProfile = () => {
 
                 <Grid container spacing={3}>
                   {Object.entries(skillCategories).map(([category, data]) => (
-                    <Grid size={{xs:12, md:6}} key={category}>
+                    <Grid size={{ xs: 12, md: 6 }} key={category}>
                       <Paper
                         elevation={0}
                         sx={{
@@ -418,7 +426,7 @@ const UserProfile = () => {
                 </Typography>
                 <Grid container spacing={2}>
                   {projects.map((project, index) => (
-                    <Grid size={{xs:12, md:4}} key={index}>
+                    <Grid size={{ xs: 12, md: 4 }} key={index}>
                       <Paper
                         sx={{
                           p: 3,
@@ -492,7 +500,7 @@ const UserProfile = () => {
           </Grid>
 
           {/* Right Column */}
-          <Grid size={{xs:12, lg:4}}>
+          <Grid size={{ xs: 12, lg: 4 }}>
             {/* Contact Card */}
             <Card sx={{ mb: 3, background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", color: "white" }}>
               <CardContent sx={{ p: 3 }}>
@@ -662,6 +670,7 @@ const UserProfile = () => {
         <Download />
       </Fab>
     </Box>
+
   )
 }
 
