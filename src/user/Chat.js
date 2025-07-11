@@ -479,8 +479,10 @@ const Chat = () => {
               flexDirection: "column",
               gap: 3,
               bgcolor: "#fafafa",
+              position:'relative'
             }}
           >
+            <Button sx={{position:'absolute', top:12, right:15}} onClick={() => navigate(-1)} variant="contained">Go Back</Button>
             <ChatIcon sx={{ fontSize: 80, color: "text.disabled" }} />
             <Typography variant="h5" color="text.secondary" fontWeight="medium">
               Welcome to Messages

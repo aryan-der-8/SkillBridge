@@ -521,7 +521,7 @@ const UserProfile = () => {
                     { icon: Twitter, label: "Twitter", url: user.socialLinks.twitter, color: "#1DA1F2" },
                     { icon: Language, label: "Portfolio", url: user.socialLinks.website, color: "#4CAF50" },
                   ]
-                    .filter((social) => social.url) // 👈 only show if the link is available
+                    .filter((social) => social.url) // only show if the link is available
                     .map((social, index) => {
                       const IconComponent = social.icon;
                       return (

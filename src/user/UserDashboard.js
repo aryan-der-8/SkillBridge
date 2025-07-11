@@ -123,16 +123,15 @@ const UserDashboard = () => {
     const updatedApplications = [...currentApplications, newApplication]
 
     // Save to localStorage
-    localStorage.setItem("appliedBusinesses", JSON.stringify(updatedApplications))
-
-    // Update state
-    setAppliedBusinesses(updatedApplications)
-    setBusinesses((prev) => [...prev]);
-
-    // mark this button as disabled
-    setSelectedCardIndex((selectedCardIndex) => [...selectedCardIndex, index]);
-
-    window.confirm(`Application submitted successfully to ${businessToApply.jobTitle}!`)
+    if(window.confirm(`Application submitted successfully to ${businessToApply.jobTitle}!`)) {
+      localStorage.setItem("appliedBusinesses", JSON.stringify(updatedApplications))
+      // Update state
+      setAppliedBusinesses(updatedApplications)
+      setBusinesses((prev) => [...prev]);
+  
+      // mark this button as disabled
+      setSelectedCardIndex((selectedCardIndex) => [...selectedCardIndex, index]);
+    }
   }
 
   const handleMenuOpen = (event) => {
