@@ -57,17 +57,21 @@ import {
 import { useContext, useEffect, useState } from "react"
 import EditProfileDialog from "./EditProfileDialog";
 import { UserContext } from "../context/UserContext"
+import { useNavigate } from "react-router"
 
 const UserProfile = () => {
   const theme = useTheme()
   const [editOpen, setEditOpen] = useState(false);
-  const {userData, setUserData} = useContext(UserContext)
-  // Mock user data
+  const { userData, setUserData } = useContext(UserContext)
+  const navigate = useNavigate();
 
+  // Mock user data
   const handleEditOpen = () => setEditOpen(true);
   const handleEditClose = () => setEditOpen(false);
-  const handleProfileSave = (updatedData) => setUserData(updatedData);
-
+  const handleProfileSave = (updatedData) => {
+    setUserData(updatedData);
+    localStorage.setItem("userLoginData", JSON.stringify(updatedData));
+  };;
   const user = {
     firstName: userData.firstName,
     lastName: userData.lastName,
@@ -83,38 +87,40 @@ const UserProfile = () => {
       userData?.interest?.map((item) => item) || "Problem Solving"
     ],
     experience: `${userData.experience} years`,
-    jobTitle: `Lead ${userData?.interest[0]}`,
+    jobTitle: `Lead ${Array.isArray(userData?.interest) && userData.interest.length > 0 ? userData.interest[0] : "Developer"}`,
     company: "InnovateTech Solutions",
     profileImage: "/placeholder.svg?height=150&width=150",
     coverImage: "/placeholder.svg?height=300&width=1200",
     isVerified: true,
     socialLinks: {
-      github: "https://github.com/alexrodriguez",
-      linkedin: "https://linkedin.com/in/alexrodriguez",
-      twitter: "https://twitter.com/alexrodriguez",
-      website: "https://alexrodriguez.dev",
+      github: userData.socialLinks.github || '',
+      linkedin: userData.socialLinks.linkedin || '',
+      twitter: userData.socialLinks.twitter || '',
+      website: userData.socialLinks.website || '',
     },
   }
 
-  const skillCategories = {
-    Frontend: { skills: ["React", "Next.js", "TypeScript"], level: 92 },
-    Backend: { skills: ["Node.js", "Python", "GraphQL"], level: 88 },
-    Database: { skills: ["MongoDB", "PostgreSQL"], level: 85 },
-    "Cloud & DevOps": { skills: ["AWS", "Docker"], level: 80 },
-  }
+  const iconMap = {
+    CloudUpload,
+    Code,
+    EmojiEvents,
+    GitHub,
+    Star,
+    People,
+    Work,
+    Default: EmojiEvents,
+  };
 
-  const achievements = [
-    { title: "AWS Solutions Architect", date: "2024", icon: CloudUpload, color: "#FF9800" },
-    { title: "React Advanced Certification", date: "2023", icon: Code, color: "#2196F3" },
-    { title: "Tech Lead of the Year", date: "2023", icon: EmojiEvents, color: "#FFD700" },
-    { title: "Open Source Contributor", date: "2022", icon: GitHub, color: "#4CAF50" },
-  ]
+  const skillCategories = Object.entries(userData?.skillCategories || {}).map(([category, data]) => ({
+    category,
+    skills: data.skills || [],
+    level: data.level || 0,
+  }));
 
-  const projects = [
-    { name: "E-commerce Platform", tech: "React, Node.js, AWS", status: "Live" },
-    { name: "AI Chat Application", tech: "Python, OpenAI, React", status: "Development" },
-    { name: "DevOps Pipeline", tech: "Docker, Jenkins, AWS", status: "Completed" },
-  ]
+  const achievements = (userData.achievements || []).map((ach) => ({
+    ...ach,
+    icon: iconMap[ach.icon] || iconMap.Default,
+  }));
 
   const stats = [
     { label: "Projects", value: "52", icon: Work, color: "#1976d2" },
@@ -123,12 +129,9 @@ const UserProfile = () => {
     { label: "GitHub Stars", value: "1.2k", icon: Star, color: "#e91e63" },
   ]
 
-  const timelineData = [
-    { year: "2024", title: "Lead Developer", company: "InnovateTech", type: "work" },
-    { year: "2022", title: "Senior Developer", company: "TechCorp", type: "work" },
-    { year: "2020", title: "Full Stack Developer", company: "StartupXYZ", type: "work" },
-    { year: "2018", title: "Software Engineering Degree", company: "Tech University", type: "education" },
-  ]
+  const timelineData = (userData.careerJourney || []).map((career) => ({
+    ...career,
+  }));
 
   return (
     <Box sx={{ bgcolor: "#f5f7fa", minHeight: "100vh" }}>
@@ -179,6 +182,18 @@ const UserProfile = () => {
                   >
                     <Edit />
                   </IconButton>
+                </Tooltip>
+                <Tooltip title="Go Back">
+                  <Button
+                    sx={{
+                      bgcolor: alpha("#fff", 0.2),
+                      color: "white",
+                      "&:hover": { bgcolor: alpha("#fff", 0.3) },
+                    }}
+                    onClick={() => navigate(-1)}
+                  >
+                    Go Back
+                  </Button>
                 </Tooltip>
               </Stack>
             </Stack>
@@ -250,6 +265,7 @@ const UserProfile = () => {
               <Grid size={{ xs: 12, md: 3 }}>
                 <Stack spacing={2} alignItems="center">
                   <Button
+                    onClick={() => navigate('/chat')}
                     variant="contained"
                     size="large"
                     startIcon={<Message />}
@@ -332,139 +348,93 @@ const UserProfile = () => {
                   Skills & Expertise
                 </Typography>
 
-                <Grid container spacing={3}>
-                  {Object.entries(skillCategories).map(([category, data]) => (
-                    <Grid size={{ xs: 12, md: 6 }} key={category}>
-                      <Paper
-                        elevation={0}
-                        sx={{
-                          p: 3,
-                          bgcolor: alpha(theme.palette.primary.main, 0.05),
-                          border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
-                          borderRadius: 3,
-                        }}
-                      >
-                        <Typography variant="h6" fontWeight="bold" gutterBottom>
-                          {category}
-                        </Typography>
-                        <Box sx={{ mb: 2 }}>
-                          <Stack direction="row" justifyContent="space-between" mb={1}>
-                            <Typography variant="body2">Proficiency</Typography>
-                            <Typography variant="body2" fontWeight="bold">
-                              {data.level}%
-                            </Typography>
-                          </Stack>
-                          <Box sx={{ position: "relative" }}>
-                            <CircularProgress
-                              variant="determinate"
-                              value={100}
-                              size={60}
-                              thickness={4}
-                              sx={{ color: alpha(theme.palette.primary.main, 0.1) }}
-                            />
-                            <CircularProgress
-                              variant="determinate"
-                              value={data.level}
-                              size={60}
-                              thickness={4}
-                              sx={{
-                                position: "absolute",
-                                left: 0,
-                                color: theme.palette.primary.main,
-                              }}
-                            />
-                            <Box
-                              sx={{
-                                position: "absolute",
-                                top: 0,
-                                left: 0,
-                                bottom: 0,
-                                right: 0,
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                              }}
-                            >
-                              <Typography variant="caption" fontWeight="bold">
-                                {data.level}%
+                {skillCategories.length > 0 && (
+                  <Grid container spacing={3}>
+                    {skillCategories.map((categoryItem, index) => (
+                      <Grid size={{ xs: 12, md: 6 }} key={index}>
+                        <Paper
+                          elevation={0}
+                          sx={{
+                            p: 3,
+                            bgcolor: alpha(theme.palette.primary.main, 0.05),
+                            border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
+                            borderRadius: 3,
+                          }}
+                        >
+                          <Typography variant="h6" fontWeight="bold" gutterBottom>
+                            {categoryItem.category}
+                          </Typography>
+
+                          <Box sx={{ mb: 2 }}>
+                            <Stack direction="row" justifyContent="space-between" mb={1}>
+                              <Typography variant="body2">Proficiency</Typography>
+                              <Typography variant="body2" fontWeight="bold">
+                                {categoryItem.level}%
                               </Typography>
+                            </Stack>
+
+                            <Box sx={{ position: "relative" }}>
+                              <CircularProgress
+                                variant="determinate"
+                                value={100}
+                                size={60}
+                                thickness={4}
+                                sx={{ color: alpha(theme.palette.primary.main, 0.1) }}
+                              />
+                              <CircularProgress
+                                variant="determinate"
+                                value={categoryItem.level}
+                                size={60}
+                                thickness={4}
+                                sx={{
+                                  position: "absolute",
+                                  left: 0,
+                                  color: theme.palette.primary.main,
+                                }}
+                              />
+                              <Box
+                                sx={{
+                                  position: "absolute",
+                                  top: 0,
+                                  left: 0,
+                                  bottom: 0,
+                                  right: 0,
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <Typography variant="caption" fontWeight="bold">
+                                  {categoryItem.level}%
+                                </Typography>
+                              </Box>
                             </Box>
                           </Box>
-                        </Box>
-                        <Stack direction="row" flexWrap="wrap" gap={1}>
-                          {data.skills.map((skill, idx) => (
-                            <Chip
-                              key={idx}
-                              label={skill}
-                              size="small"
-                              sx={{
-                                bgcolor: theme.palette.primary.main,
-                                color: "white",
-                                "&:hover": { bgcolor: theme.palette.primary.dark },
-                              }}
-                            />
-                          ))}
-                        </Stack>
-                      </Paper>
-                    </Grid>
-                  ))}
-                </Grid>
-              </CardContent>
-            </Card>
 
-            {/* Projects Section */}
-            <Card sx={{ mb: 4 }}>
-              <CardContent sx={{ p: 4 }}>
-                <Typography
-                  variant="h5"
-                  fontWeight="bold"
-                  gutterBottom
-                  sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                >
-                  <Code color="primary" />
-                  Recent Projects
-                </Typography>
-                <Grid container spacing={2}>
-                  {projects.map((project, index) => (
-                    <Grid size={{ xs: 12, md: 4 }} key={index}>
-                      <Paper
-                        sx={{
-                          p: 3,
-                          height: "100%",
-                          background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
-                          transition: "all 0.3s ease",
-                          "&:hover": {
-                            transform: "translateY(-4px)",
-                            boxShadow: theme.shadows[8],
-                          },
-                        }}
-                      >
-                        <Typography variant="h6" fontWeight="bold" gutterBottom>
-                          {project.name}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary" mb={2}>
-                          {project.tech}
-                        </Typography>
-                        <Chip
-                          label={project.status}
-                          size="small"
-                          color={
-                            project.status === "Live"
-                              ? "success"
-                              : project.status === "Development"
-                                ? "warning"
-                                : "default"
-                          }
-                        />
-                      </Paper>
-                    </Grid>
-                  ))}
-                </Grid>
+                          <Stack direction="row" flexWrap="wrap" gap={1}>
+                            {categoryItem.skills.map((skill, idx) => (
+                              <Chip
+                                key={idx}
+                                label={skill}
+                                size="small"
+                                sx={{
+                                  bgcolor: theme.palette.primary.main,
+                                  color: "white",
+                                  "&:hover": { bgcolor: theme.palette.primary.dark },
+                                }}
+                              />
+                            ))}
+                          </Stack>
+                        </Paper>
+                      </Grid>
+                    ))}
+                  </Grid>
+                )}
               </CardContent>
             </Card>
 
             {/* Experience Timeline */}
-            <Card>
+            <Card sx={{ mb: 4, overflow: "visible" }}>
               <CardContent sx={{ p: 4 }}>
                 <Typography
                   variant="h5"
@@ -472,31 +442,41 @@ const UserProfile = () => {
                   gutterBottom
                   sx={{ display: "flex", alignItems: "center", gap: 1 }}
                 >
-                  <TrendingUp color="primary" />
-                  Career Journey
+                  <Psychology color="primary" />
+                  Career journey
                 </Typography>
                 <Timeline>
-                  {timelineData.map((item, index) => (
-                    <TimelineItem key={index}>
-                      <TimelineSeparator>
-                        <TimelineDot color={item.type === "work" ? "primary" : "secondary"} sx={{ p: 1 }}>
-                          {item.type === "work" ? <Work /> : <School />}
-                        </TimelineDot>
-                        {index < timelineData.length - 1 && <TimelineConnector />}
-                      </TimelineSeparator>
-                      <TimelineContent sx={{ py: "12px", px: 2 }}>
-                        <Typography variant="h6" fontWeight="bold">
-                          {item.title}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {item.company} • {item.year}
-                        </Typography>
-                      </TimelineContent>
-                    </TimelineItem>
-                  ))}
+                  {timelineData.length === 0 ? (
+                    <Typography variant="body2" color="text.secondary">
+                      Fresher — No career journey added yet.
+                    </Typography>
+                  ) : (
+                    timelineData.map((item, index) => (
+                      <TimelineItem key={index}>
+                        <TimelineSeparator>
+                          <TimelineDot
+                            color={item.type === "work" ? "primary" : "secondary"}
+                            sx={{ p: 1 }}
+                          >
+                            {item.type === "work" ? <Work /> : <School />}
+                          </TimelineDot>
+                          {index < timelineData.length - 1 && <TimelineConnector />}
+                        </TimelineSeparator>
+                        <TimelineContent sx={{ py: "12px", px: 2 }}>
+                          <Typography variant="h6" fontWeight="bold">
+                            {item.title}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {item.company} • {item.year}
+                          </Typography>
+                        </TimelineContent>
+                      </TimelineItem>
+                    ))
+                  )}
                 </Timeline>
               </CardContent>
             </Card>
+
           </Grid>
 
           {/* Right Column */}
@@ -540,26 +520,28 @@ const UserProfile = () => {
                     { icon: LinkedIn, label: "LinkedIn", url: user.socialLinks.linkedin, color: "#0077B5" },
                     { icon: Twitter, label: "Twitter", url: user.socialLinks.twitter, color: "#1DA1F2" },
                     { icon: Language, label: "Portfolio", url: user.socialLinks.website, color: "#4CAF50" },
-                  ].map((social, index) => {
-                    const IconComponent = social.icon
-                    return (
-                      <Button
-                        key={index}
-                        href={social.url}
-                        target="_blank"
-                        startIcon={<IconComponent />}
-                        fullWidth
-                        sx={{
-                          justifyContent: "flex-start",
-                          color: social.color,
-                          textTransform: "none",
-                          "&:hover": { bgcolor: alpha(social.color, 0.1) },
-                        }}
-                      >
-                        {social.label}
-                      </Button>
-                    )
-                  })}
+                  ]
+                    .filter((social) => social.url) // 👈 only show if the link is available
+                    .map((social, index) => {
+                      const IconComponent = social.icon;
+                      return (
+                        <Button
+                          key={index}
+                          href={social.url}
+                          target="_blank"
+                          startIcon={<IconComponent />}
+                          fullWidth
+                          sx={{
+                            justifyContent: "flex-start",
+                            color: social.color,
+                            textTransform: "none",
+                            "&:hover": { bgcolor: alpha(social.color, 0.1) },
+                          }}
+                        >
+                          {social.label}
+                        </Button>
+                      );
+                    })}
                 </Stack>
               </CardContent>
             </Card>
@@ -570,36 +552,44 @@ const UserProfile = () => {
                 <Typography variant="h6" fontWeight="bold" gutterBottom>
                   Achievements
                 </Typography>
-                <Stack spacing={2}>
-                  {achievements.map((achievement, index) => {
-                    const IconComponent = achievement.icon
-                    return (
-                      <Paper
-                        key={index}
-                        sx={{
-                          p: 2,
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 2,
-                          bgcolor: alpha(achievement.color, 0.1),
-                          border: `1px solid ${alpha(achievement.color, 0.2)}`,
-                        }}
-                      >
-                        <IconComponent sx={{ color: achievement.color, fontSize: 28 }} />
-                        <Box>
-                          <Typography variant="subtitle2" fontWeight="bold">
-                            {achievement.title}
-                          </Typography>
-                          <Typography variant="caption" color="text.secondary">
-                            {achievement.date}
-                          </Typography>
-                        </Box>
-                      </Paper>
-                    )
-                  })}
-                </Stack>
+
+                {achievements.length === 0 ? (
+                  <Typography variant="body2" color="text.secondary">
+                    No achievements added yet.
+                  </Typography>
+                ) : (
+                  <Stack spacing={2}>
+                    {achievements.map((achievement, index) => {
+                      const IconComponent = achievement.icon;
+                      return (
+                        <Paper
+                          key={index}
+                          sx={{
+                            p: 2,
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 2,
+                            bgcolor: `${achievement.color}20`,
+                            border: `1px solid ${achievement.color}40`,
+                          }}
+                        >
+                          <IconComponent sx={{ color: achievement.color, fontSize: 28 }} />
+                          <Box>
+                            <Typography variant="subtitle2" fontWeight="bold">
+                              {achievement.title}
+                            </Typography>
+                            <Typography variant="caption" color="text.secondary">
+                              {achievement.date}
+                            </Typography>
+                          </Box>
+                        </Paper>
+                      );
+                    })}
+                  </Stack>
+                )}
               </CardContent>
             </Card>
+
 
             {/* Activity Stats */}
             <Card>
