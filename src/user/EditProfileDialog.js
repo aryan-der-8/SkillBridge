@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import {
   Dialog,
   DialogTitle,
@@ -26,6 +26,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Tooltip,
 } from "@mui/material"
 import {
   Close as CloseIcon,
@@ -216,6 +217,23 @@ const EditProfileDialog = ({ open, handleClose, user, onSave }) => {
     setTabValue(newValue)
   }
 
+  const fileInputRef = useRef();
+
+  const handleAvtarClick = () => {
+    fileInputRef.current.click();
+  }
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setFormData((prev) => ({
+        ...prev,
+        profileImage: imageUrl,
+      }));
+    }
+  }
+
   return (
     <Dialog open={open} onClose={handleClose} fullScreen>
       <DialogTitle
@@ -259,12 +277,35 @@ const EditProfileDialog = ({ open, handleClose, user, onSave }) => {
             <Grid container spacing={3}>
               {/* Profile Image Preview */}
               {formData.profileImage && (
-                <Grid size={{xs:12}} sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
-                  <Avatar src={formData.profileImage} sx={{ width: 100, height: 100 }} />
+                <Grid size={{ xs: 12 }} sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
+                  <Tooltip title="set profile pic">
+                  <Avatar 
+                    src={formData.profileImage}
+                    sx={{
+                      width: 100,
+                      height: 100,
+                      border: "3px solid white",
+                      boxShadow: 3,
+                      cursor: "pointer",
+                      transition: "0.3s ease-in-out",
+                      "&:hover": {
+                        transform: "scale(1.05)",
+                        boxShadow: 6,
+                      },
+                    }}
+                    onClick={handleAvtarClick} />
+                    </Tooltip>
                 </Grid>
               )}
+              <input
+                type="file"
+                accept="image/*"
+                ref={fileInputRef}
+                style={{ display: "none" }}
+                onChange={handleFileChange}
+              />
 
-              <Grid size={{xs:12, md:6}}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <TextField
                   fullWidth
                   label="First Name"
@@ -275,7 +316,7 @@ const EditProfileDialog = ({ open, handleClose, user, onSave }) => {
                   variant="outlined"
                 />
               </Grid>
-              <Grid size={{xs:12, md:6}}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <TextField
                   fullWidth
                   label="Last Name"
@@ -286,7 +327,7 @@ const EditProfileDialog = ({ open, handleClose, user, onSave }) => {
                   variant="outlined"
                 />
               </Grid>
-              <Grid size={{xs:12, md:6}}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <TextField
                   fullWidth
                   label="Email"
@@ -298,7 +339,7 @@ const EditProfileDialog = ({ open, handleClose, user, onSave }) => {
                   variant="outlined"
                 />
               </Grid>
-              <Grid size={{xs:12, md:6}}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <TextField
                   fullWidth
                   label="Phone"
@@ -308,7 +349,7 @@ const EditProfileDialog = ({ open, handleClose, user, onSave }) => {
                   variant="outlined"
                 />
               </Grid>
-              <Grid size={{xs:12, md:6}}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <TextField
                   fullWidth
                   label="Age"
@@ -319,7 +360,7 @@ const EditProfileDialog = ({ open, handleClose, user, onSave }) => {
                   variant="outlined"
                 />
               </Grid>
-              <Grid size={{xs:12, md:6}}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <TextField
                   fullWidth
                   label="Location"
@@ -329,7 +370,7 @@ const EditProfileDialog = ({ open, handleClose, user, onSave }) => {
                   variant="outlined"
                 />
               </Grid>
-              <Grid size={{xs:12, md:6}}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <TextField
                   fullWidth
                   label="Education"
@@ -339,7 +380,7 @@ const EditProfileDialog = ({ open, handleClose, user, onSave }) => {
                   variant="outlined"
                 />
               </Grid>
-              <Grid size={{xs:12, md:6}}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <TextField
                   fullWidth
                   label="Job Title"
@@ -349,7 +390,7 @@ const EditProfileDialog = ({ open, handleClose, user, onSave }) => {
                   variant="outlined"
                 />
               </Grid>
-              <Grid size={{xs:12}}>
+              <Grid size={{ xs: 12 }}>
                 <TextField
                   fullWidth
                   label="Company"
@@ -359,7 +400,7 @@ const EditProfileDialog = ({ open, handleClose, user, onSave }) => {
                   variant="outlined"
                 />
               </Grid>
-              <Grid size={{xs:12}}>
+              <Grid size={{ xs: 12 }}>
                 <TextField
                   fullWidth
                   label="About Me"
@@ -372,7 +413,7 @@ const EditProfileDialog = ({ open, handleClose, user, onSave }) => {
                   placeholder="Tell us about yourself..."
                 />
               </Grid>
-              <Grid size={{xs:12}}>
+              <Grid size={{ xs: 12 }}>
                 <TextField
                   fullWidth
                   label="Profile Image URL"
@@ -416,7 +457,7 @@ const EditProfileDialog = ({ open, handleClose, user, onSave }) => {
             ) : (
               <Grid container spacing={3}>
                 {Object.entries(formData.skillCategories || {}).map(([category, data], index) => (
-                  <Grid size={{xs:12}} key={index}>
+                  <Grid size={{ xs: 12 }} key={index}>
                     <Card variant="outlined">
                       <CardContent>
                         <Stack spacing={3}>
@@ -493,7 +534,7 @@ const EditProfileDialog = ({ open, handleClose, user, onSave }) => {
 
             <Grid container spacing={3}>
               {Object.entries(formData.socialLinks).map(([key, value], i) => (
-                <Grid size={{xs:12, md:6}} key={i}>
+                <Grid size={{ xs: 12, md: 6 }} key={i}>
                   <TextField
                     fullWidth
                     label={key.charAt(0).toUpperCase() + key.slice(1)}
@@ -538,7 +579,7 @@ const EditProfileDialog = ({ open, handleClose, user, onSave }) => {
             ) : (
               <Grid container spacing={3}>
                 {formData.achievements.map((ach, index) => (
-                  <Grid size={{xs:12, md:6}} key={index}>
+                  <Grid size={{ xs: 12, md: 6 }} key={index}>
                     <Card variant="outlined">
                       <CardContent>
                         <Stack spacing={2}>
@@ -629,11 +670,11 @@ const EditProfileDialog = ({ open, handleClose, user, onSave }) => {
             ) : (
               <Grid container spacing={3}>
                 {formData.careerJourney.map((item, index) => (
-                  <Grid size={{xs:12}} key={index}>
+                  <Grid size={{ xs: 12 }} key={index}>
                     <Card variant="outlined">
                       <CardContent>
                         <Grid container spacing={2}>
-                          <Grid size={{xs:12, md:6}}>
+                          <Grid size={{ xs: 12, md: 6 }}>
                             <TextField
                               fullWidth
                               label="Title/Position"
@@ -643,7 +684,7 @@ const EditProfileDialog = ({ open, handleClose, user, onSave }) => {
                               size="small"
                             />
                           </Grid>
-                          <Grid size={{xs:12, md:6}}>
+                          <Grid size={{ xs: 12, md: 6 }}>
                             <TextField
                               fullWidth
                               label="Company/Institute"
@@ -653,7 +694,7 @@ const EditProfileDialog = ({ open, handleClose, user, onSave }) => {
                               size="small"
                             />
                           </Grid>
-                          <Grid size={{xs:12, md:6}}>
+                          <Grid size={{ xs: 12, md: 6 }}>
                             <TextField
                               fullWidth
                               label="Year"
@@ -664,7 +705,7 @@ const EditProfileDialog = ({ open, handleClose, user, onSave }) => {
                               placeholder="e.g., 2020-2023"
                             />
                           </Grid>
-                          <Grid size={{xs:12, md:6}}>
+                          <Grid size={{ xs: 12, md: 6 }}>
                             <FormControl fullWidth size="small">
                               <InputLabel>Type</InputLabel>
                               <Select

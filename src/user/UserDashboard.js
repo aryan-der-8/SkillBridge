@@ -64,8 +64,8 @@ const UserDashboard = () => {
 
   }, [navigate])
 
-    const goChat = () => {
-      navigate('/chat')
+  const goChat = () => {
+    navigate('/chat')
   }
 
   const handleApply = (businessToApply, index) => {
@@ -123,12 +123,12 @@ const UserDashboard = () => {
     const updatedApplications = [...currentApplications, newApplication]
 
     // Save to localStorage
-    if(window.confirm(`Application submitted successfully to ${businessToApply.jobTitle}!`)) {
+    if (window.confirm(`Application submitted successfully to ${businessToApply.jobTitle}!`)) {
       localStorage.setItem("appliedBusinesses", JSON.stringify(updatedApplications))
       // Update state
       setAppliedBusinesses(updatedApplications)
       setBusinesses((prev) => [...prev]);
-  
+
       // mark this button as disabled
       setSelectedCardIndex((selectedCardIndex) => [...selectedCardIndex, index]);
     }
@@ -193,18 +193,18 @@ const UserDashboard = () => {
       sx={{ minHeight: "100vh", paddingTop: "10px", background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)" }}
     >
       {/* Header */}
-      <Box sx={{display:'flex', gap:3}}>
+      <Box sx={{ display: 'flex', gap: 3 }}>
         <Button variant="outlined" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginLeft: "30px", gap: 10 }}>
-          <Box  onClick={() => navigate("/user/profile")}
+          <Box onClick={() => navigate("/user/profile")}
             sx={{ display: "flex", alignItems: "center", gap: 1, textTransform: "none" }}>
             <Avatar sx={{ width: 32, height: 32, bgcolor: "#1976d2" }}> {signUpData?.email ? signUpData.email[0].toUpperCase() : "U"}</Avatar>
             <Typography sx={{ display: { xs: "none", md: "block" } }}>{signUpData.email}</Typography>
           </Box>
         </Button>
 
-        <Button variant="outlined" onClick={goChat} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight:'30px', gap: 10 }}>
-          <Box sx={{ display: "flex", alignItems: "center", gap: '5px', textTransform: "none"}}>
-              <ChatIcon/>
+        <Button variant="outlined" onClick={goChat} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: '30px', gap: 10 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: '5px', textTransform: "none" }}>
+            <ChatIcon />
             <Typography sx={{ display: { xs: "none", md: "block" } }}>Chat</Typography>
           </Box>
         </Button>
@@ -253,7 +253,10 @@ const UserDashboard = () => {
             <Grid size={{ xs: 12, sm: 4 }}>
               <Paper sx={{ bgcolor: "rgba(255,255,255,0.2)", p: 2, textAlign: "center" }}>
                 <Typography variant="h4" sx={{ fontWeight: "bold" }}>
-                  {Object.keys(acceptedApplications).length}
+                  {Object.entries(acceptedApplications || {}).filter(
+                    ([key, value]) =>
+                      key.endsWith(userData.email)
+                  ).length}
                 </Typography>
                 <Typography variant="body2" sx={{ opacity: 0.9 }}>
                   Responses Received
@@ -297,7 +300,6 @@ const UserDashboard = () => {
               // Check if THIS specific business is applied by current user
               const isApplied = isBusinessApplied(business)
               const isOwnBusiness = business.email === signUpData.email
-              const rating = getRandomRating()
               const ApKey = `${business.jobTitle}_${business.ownerName}_${signUpData.email}`
               const appStatus = acceptedApplications[ApKey];
 
@@ -341,7 +343,6 @@ const UserDashboard = () => {
                               fontSize: "1.1rem",
                             }}
                           >
-                            {getInitials(business.jobTitle || "Business")}
                           </Avatar>
                           <Box>
                             <Typography
@@ -363,17 +364,6 @@ const UserDashboard = () => {
                             </Box>
                           </Box>
                         </Box>
-                        <Chip
-                          icon={<StarIcon sx={{ fontSize: 14, color: "#ffc107" }} />}
-                          label={rating}
-                          size="small"
-                          variant="outlined"
-                          sx={{
-                            borderColor: "#ffc107",
-                            color: "#ffc107",
-                            fontWeight: "bold",
-                          }}
-                        />
                       </Box>
 
                       {/* Description */}

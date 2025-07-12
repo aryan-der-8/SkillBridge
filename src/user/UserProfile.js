@@ -89,7 +89,7 @@ const UserProfile = () => {
     experience: `${userData.experience} years`,
     jobTitle: `Lead ${Array.isArray(userData?.interest) && userData.interest.length > 0 ? userData.interest[0] : "Developer"}`,
     company: "InnovateTech Solutions",
-    profileImage: "/placeholder.svg?height=150&width=150",
+    profileImage: userData.profileImage,
     coverImage: "/placeholder.svg?height=300&width=1200",
     isVerified: true,
     socialLinks: {
