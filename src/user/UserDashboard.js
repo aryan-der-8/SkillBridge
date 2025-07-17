@@ -34,7 +34,6 @@ import JobDetailsDialog from "./JobDetailsDialog"
 import { UserContext } from "../context/UserContext"
 import ChatIcon from "@mui/icons-material/Chat";
 
-
 const UserDashboard = () => {
   const navigate = useNavigate()
   const [businesses, setBusinesses] = useState([])

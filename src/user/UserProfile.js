@@ -135,10 +135,10 @@ const UserProfile = () => {
     coverImage: "/placeholder.svg?height=300&width=1200",
     isVerified: true,
     socialLinks: {
-      github: userData.socialLinks.github || '',
-      linkedin: userData.socialLinks.linkedin || '',
-      twitter: userData.socialLinks.twitter || '',
-      website: userData.socialLinks.website || '',
+      github: userData?.socialLinks?.github || '',
+      linkedin: userData?.socialLinks?.linkedin || '',
+      twitter: userData?.socialLinks?.twitter || '',
+      website: userData?.socialLinks?.website || '',
     },
   }
 

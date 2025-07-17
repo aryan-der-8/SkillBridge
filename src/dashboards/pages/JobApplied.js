@@ -20,10 +20,6 @@ import {
     FormControl,
     InputLabel,
     Select,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
 } from "@mui/material"
 import {
     Work as BriefcaseIcon,
@@ -193,10 +189,15 @@ const JobApplied = () => {
     }
 
     const filteredApplications = applications.filter((app) => {
+        const name = app.applicantName || "";
+        const email = app.applicantEmail || "";
+        const business = app.businessName || "";
+
         const matchesSearch =
-            app.applicantName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            app.applicantEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            app.businessName.toLowerCase().includes(searchTerm.toLowerCase())
+            name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            business.toLowerCase().includes(searchTerm.toLowerCase());
+
         const matchesStatus = statusFilter === "all" || app.status === statusFilter
         return matchesSearch && matchesStatus
     })
@@ -456,125 +457,6 @@ const JobApplied = () => {
 
             {/* Application Details Dialog */}
             <ApplicationDialog dialogOpen={dialogOpen} setDialogOpen={setDialogOpen} selectedApplication={selectedApplication} handleStatusChange={handleStatusChange} getInitials={getInitials} getStatusColor={getStatusColor} />
-            {/* <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="md" fullWidth>
-                {selectedApplication && (
-                    <>
-                        <DialogTitle>
-                            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                                <Avatar sx={{ bgcolor: "#1976d2" }}>{getInitials(selectedApplication.applicantName)}</Avatar>
-                                <Box>
-                                    <Typography variant="h6">{selectedApplication.applicantName}</Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        {selectedApplication.applicantEmail}
-                                    </Typography>
-                                </Box>
-                                <Chip
-                                    label={selectedApplication.status.charAt(0).toUpperCase() + selectedApplication.status.slice(1)}
-                                    sx={getStatusColor(selectedApplication.status)}
-                                />
-                            </Box>
-                        </DialogTitle>
-                        <DialogContent>
-                            <Box sx={{ mb: 3 }}>
-                                <Typography variant="subtitle1" sx={{ fontWeight: "bold", mb: 1 }}>
-                                    Application Details
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                                    <span style={{ fontWeight: 'bold' }}>Applied to:</span> {selectedApplication.applicantName}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                                    <span style={{ fontWeight: 'bold' }}>Applied on:</span> {new Date(selectedApplication.appliedDate).toLocaleDateString()}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    <span style={{ fontWeight: 'bold' }}>Experience:</span> {selectedApplication.experience}
-                                </Typography>
-                            </Box>
-
-                            <Typography variant="subtitle1" sx={{ fontWeight: "bold", mb: 1 }}>
-                                Applicant details
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                                <span style={{ fontWeight: 'bold' }}> FullName:</span> {selectedApplication.userName}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                                <span style={{ fontWeight: 'bold' }}>  userEmail:</span> {selectedApplication.userEmail}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                                <span style={{ fontWeight: 'bold' }}> Phone:</span> {selectedApplication.phone}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                                <span style={{ fontWeight: 'bold' }}> Gender: </span>{selectedApplication.gender}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                                <span style={{ fontWeight: 'bold' }}> Age:</span> {selectedApplication.age}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                                <span style={{ fontWeight: 'bold' }}> workPreference:</span> {selectedApplication.workPreference}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                                <span style={{ fontWeight: 'bold' }}> College/University :</span> {selectedApplication.education}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                                <span style={{ fontWeight: 'bold' }}> Availability:</span> {selectedApplication.availability}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                                <span style={{ fontWeight: 'bold' }}> Location:</span> {selectedApplication.location}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                                <span style={{ fontWeight: 'bold' }}> Expected Salary:</span> {selectedApplication.expectedSalary}
-                            </Typography>
-
-                            {selectedApplication.skills && (
-                                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, mb: 2 }}>
-                                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                                        <span style={{ fontWeight: 'bold' }}> Skills: </span> {selectedApplication.skills.map((skill, index) => (
-                                            <Chip key={index} label={skill} size="small" variant="outlined" />
-                                        ))}
-                                    </Typography>
-                                </Box>
-                            )}
-
-                            <Typography variant="body2" color="text.secondary" fontWeight={'bold'} sx={{ mb: 1 }}>
-                                About
-                            </Typography>
-                            <Paper sx={{ bgcolor: "#f8f9fa", p: 2, borderRadius: 1 }}>
-                                <Typography variant="body2" color="text.secondary">
-                                    {selectedApplication.about.length > 150
-                                        ? `${selectedApplication.about.substring(0, 150)}...`
-                                        : selectedApplication.about}
-                                </Typography>
-                            </Paper>
-                        </DialogContent>
-                        <DialogActions>
-                            {selectedApplication.status === "pending" && (
-                                <>
-                                    <Button
-                                        startIcon={<CheckCircleIcon />}
-                                        onClick={() => {
-                                            handleStatusChange(selectedApplication.id, "accepted")
-                                            setDialogOpen(false)
-                                        }}
-                                        sx={{ color: "#4caf50" }}
-                                    >
-                                        Accept
-                                    </Button>
-                                    <Button
-                                        startIcon={<CancelIcon />}
-                                        onClick={() => {
-                                            handleStatusChange(selectedApplication.id, "rejected")
-                                            setDialogOpen(false)
-                                        }}
-                                        sx={{ color: "#f44336" }}
-                                    >
-                                        Reject
-                                    </Button>
-                                </>
-                            )}
-                            <Button onClick={() => setDialogOpen(false)}>Close</Button>
-                        </DialogActions>
-                    </>
-                )}
-            </Dialog> */}
         </Box>
     )
 }
